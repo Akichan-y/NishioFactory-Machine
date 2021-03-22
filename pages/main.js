@@ -243,12 +243,24 @@ export default {
       let y2 = d2.getFullYear();
       let m2 = d2.getMonth();
       let d3 = d2.getDate();
-      let startD = new Date(y2,m2,d3,0,0,0);
+      let startD = new Date(y2,m2,d3,7,0,0);
       let endD = new Date(y2,m2,d3,23,59,59);
       let startTimestamp = String(Date.parse(startD));
       let endTimestamp = String(Date.parse(endD));
 
       const database = firebase.database();
+
+      const CrtTgt = database.ref('CurrentTarget/') //現在加工中の部品を定義している
+
+      CrtTgt.on('value',(snapshot)=>{
+        let CrtTgt_data = snapshot.val(); 
+        for(let i in CrtTgt_data){
+          let TgtData = CrtTgt_data[i];
+          let KishuHinmeiKijunsu = TgtData.zuban1 + TgtData.hinmei +"  "+ String(TgtData.kijunsu)+"ｹ";
+          this.$store.commit('timeBank/CurrentTargetUD',{TgtMachine:TgtData.machine,TgtValue:KishuHinmeiKijunsu});
+        }
+      });
+
       //startTime は初期値９９９を代入していたので、初回が反応していなかったというミス endTimeにしたことで解決。
       const esp = database.ref('NishioMachineCT/')
                   .orderByChild('endTime').startAt(startTimestamp).endAt(endTimestamp); 

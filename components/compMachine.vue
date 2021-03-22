@@ -6,7 +6,7 @@
       <p class="green--text text--lighten-2 font-weight-bold subtitle">{{getStopWatchSecondsArray}}</p> -->
     <!-- <v-card width=420px height="280px" elevation="15" color="grey lighten-1"> -->
     <!-- <v-card class="mt-n12 mx-auto" width=300px height="420px" elevation="20" > -->
-    <v-card class="mt-1 mb-1 mx-auto"  width=300px height="420px" elevation="20" >
+    <v-card class="mt-1 mb-1 mx-auto"  width=300px height="400px" elevation="20" >
       <!-- <v-btn @click='Methods_calcMachineRate'>test</v-btn> -->
       <!-- <v-btn @click='btnPie'>test</v-btn>
       <v-btn @click='testtest'>testtest</v-btn> -->
@@ -20,8 +20,8 @@
           <div class="yellow-circle btnLamp" v-else-if="getStatusData==3" @click="redirect">{{name}}  段取中 {{getSensingStTime}}〜</div>
           <div class="black-circle btnLamp" v-else @click="redirect">{{name}}  停止中{{getSensingStTime}}〜</div>
         </v-row>
-       
-          
+       <div class="mt-3 ml=4" :class="{'contentTgt':isTgt}">{{getCurrentTarget}}</div>
+          <!-- <v-btn @click='RstTgt'>Reseet</v-btn> -->
    
         <v-row no-gutters class="mb-0 pa-0">
           <v-col cols="4" fluid class="mt-5 pa-0" >
@@ -57,7 +57,7 @@
                 <!-- <p class="green--text mt-0 mr-5 text-right  text--lighten-2 font-weight-bold headline">{{getTimeData}}</p> -->
           </v-col>
         </v-row>
-                <LineChart class="mt-2" :data="Line_chartData" :options="Line_options" :width="400" :height="280"/>
+                <LineChart class="mt-2" :data="Line_chartData" :options="Line_options" :width="400" :height="200"/>
                 <!-- <p class="green--text mt-0 ml-2 text-left  text--lighten-2 font-weight-bold subtitle">{{getTimeDataMS}}</p> -->
                 <p class="grey--text mt-1 mb-0 ml-3 text-center  text--darken-1 font-weight-bold subtitle2">{{chokuzenSW}}</p>
           <!-- <table border="1" width="240" class="mt-2">
@@ -110,6 +110,54 @@
 </template>
 
 <style>
+.redCollor{
+    color: red;
+}
+
+.contentTgt{
+  /* animation: flash 1s linear infinite; */
+  animation: flash 1s linear ;
+  animation-fill-mode:backwards;
+  width:220px;
+  /* height:30px; */
+  /* background:#0091EA; */
+  background:white;
+  margin:5px;
+}
+
+@keyframes flash {
+  0%,35%,60%,100%{
+    opacity: 0;
+  }
+
+  25%{
+    opacity: 1;
+    background:#7fff00;
+  }
+  
+  50%{
+    opacity: 1;
+    background:#0091EA;
+  }
+  
+  75%{
+    opacity: 1;
+    background:#ff1493;
+  }
+}
+/* @keyframes flash {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+} */
+
+
 .cont{
   color:blue;
   font-size:2em;
@@ -225,6 +273,8 @@ export default {
         // nameAB:'MC027'
         // testData:'',
         // btnName: '追加',
+        isRed:false,
+        isTgt:false,
         nameAB:this.name,   //propsからdataに移すことで、
                             //変数として利用できるようになる。
         chokuzenSW:"",
@@ -281,7 +331,7 @@ export default {
                     {
                       label: ["運転","異常","停止"],
                       backgroundColor: ['limegreen','#FFBB00','#D9073D','#AAAAAA'],
-                      data: [
+                      data: [ 
                         10,
                         10,
                         10,
@@ -394,6 +444,10 @@ export default {
     // getSensingTimeStart(){
     //   return this.$store.getters['timeBank/getSensingTime'](this.nameAB) 
     // },
+    getCurrentTarget:function(){
+
+      return this.$store.getters['timeBank/getCurrentTarget'](this.nameAB);
+    },
      getCycleArray:function(){
 
        return this.$store.getters['timeBank/ getCycleArray'](this.nameAB);
@@ -505,8 +559,23 @@ export default {
     //   return this.$store.getters['timeBank/getSensingTime'](this.nameAB)
 
     // }
+    
   },
   watch: {
+    getCurrentTarget:function(newTgt,oldTgt){
+      // alert(newTgt);
+
+      this.isTgt=true;
+
+      // this.isTgt=false;
+      // this.isRed=true;
+      // this.sleep(2, function() {
+      // // console.log('5秒経過しました！');
+        
+      //   this.isTgt=false;
+      //   // alert('5秒経過しました！');
+      // });
+    },
     getStatusData:function(newStatus,oldStatus){
       this.graphUD()
       // console.log(this.nameAB);
@@ -573,6 +642,22 @@ export default {
     this.graphUD()
   },
   methods:{
+    sleep:function(waitSec, callbackFunc) {
+      //setTimeoutのサンプル。ちゃんと動くことは確認済
+      var spanedSec = 0;
+      var waitFunc = function () {
+      spanedSec++;
+      if (spanedSec >= waitSec) {
+        if (callbackFunc) callbackFunc();
+        return;
+      }
+        clearTimeout(id);
+        id = setTimeout(waitFunc, 1000);
+      };
+      var id = setTimeout(waitFunc, 1000);
+
+    },
+
     redirect:function(){
       this.$router.push('/next?pageName='+this.name )
     },
@@ -627,6 +712,9 @@ export default {
     //   console.log(this.$store.getters["timeBank/getCycleCounterData"](this.nameAB));
     // },
     graphUD:function(){
+      //部品名変更時のStyleリセット。ここに置くのはいささかダサいが、他で有効な場所を見つけることが出来ないのでｈしかななし。
+      this.isTgt=false; 
+
       //円グラフのデータを生成する
       const newChartData = Object.assign({}, this.chartData)
 
@@ -673,6 +761,7 @@ export default {
       // console.log("グラフのセットタイムアウト！！！")
       setTimeout(() => {
           this.graphUD();
+          
       }, 5000); //５秒ごとに更新
 
     },

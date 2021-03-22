@@ -58,8 +58,29 @@ export const state = () => ({
         MC028:[0,0,0,0,0,0,0,0,0,0,0],
         MC031:[0,0,0,0,0,0,0,0,0,0,0],
         GT999:[0,0,0,0,0,0,0,0,0,0,0],
+      },     
+    CurrentTarget:{
+        LN034:"BM15M-ﾌﾟﾚｯｼｬｰﾌﾟﾚｰﾄ 24ｹ",
+        MC024:"ABM10-ﾊﾝﾄﾞﾙ 24ｹ",
+        MC026:"SEC9-ｱﾀｯﾁﾒﾝﾄ  24ｹ",
+        // MC027:{code10:'1234567890',zuban1:'BM15M',zuban2:'1200001-02',hinmei:'ﾌｫｰｸｲﾔｰ',kijunsu:0},
+        MC027:"BM15M-ﾌｫｰｸｲﾔｰ 24ｹ",
+        MC028:"ST98A-ｷｬﾘｯｼﾞﾎｷｮｳ 24ｹ",
+        MC031:"BM15M-ｼﾘﾝﾀﾞｰﾍﾞｰｽ  24ｹ",
+        GT999:"ﾃﾂﾛｳ-ﾒｰﾃﾙ  24ｹ",
       },      
+    myArray :
+      {ひらがな:
 
+               {あ行:{a:"あ",i:"い",u:"う",e:"え",o:"お"},
+                か行:{a:"か",i:"き",u:"く",e:"け",o:"こ"}
+                },
+                MC027:{code10:'1234567890',zuban1:'BM15M',zuban2:'1200001-02',hinmei:'ﾌｫｰｸｲﾔｰ',kijunsu:0},
+      カタカナ:
+               {ア行:{a:"ア",i:"イ",u:"ウ",e:"エ",o:"オ"},
+                カ行:{a:"カ",i:"キ",u:"ク",e:"ケ",o:"コ"}
+      }
+  },
 
   //センサー反応時間数値形式（SWの起点となる）
   sensingTimeArry:{LN034:1613695834000,MC024:1613695834000,MC026:1613695834000,MC027:1613695834000,MC028:1613695834000,MC031:1613695834000,GT999:1613695834000},
@@ -179,6 +200,10 @@ export const actions = {
 import Vue from 'vue';
 
 export const mutations = {
+  CurrentTargetUD(state,{TgtMachine,TgtValue}){
+    Vue.set(state.CurrentTarget,TgtMachine,TgtValue)
+  },
+
   //センシング反応時間からの時間経過を計算・・・コンポーネントから参照
   StopWatchArryUD(state,{machineCode,StopWatchTime,StopWatchSecondsTime}){
     Vue.set(state.StopWatchArry,machineCode,StopWatchTime)
@@ -400,6 +425,26 @@ cycleTimeArrayDDRRst(state,machineCode){
 
 export const getters = {
 
+  getCurrentTarget:(state)=>(tgtMachine)=>{
+    //連想配列の連想配列を変数で指定することが出来なかった。2021/3/19
+    // let kishu=state.CurrentTarget[(tgtMachine)];
+    // let hin=state.CurrentTarget[(tgtMachine).hinmei];
+    // let tmp= state.CurrentTarget[(tgtMachine)]["hinmei"];
+    // return state.CurrentTarget[(tgtMachine)]["hinmei"];
+    // console.log(kishu);
+    let Tgt = tgtMachine;
+    let hin="hinmei"
+    console.log(state.myArray["ひらがな"]["か行"]["e"]);
+    console.log(state.myArray["MC027"][hin]);
+    // console.log(state.myArray[Tgt][hin]);
+    return (state.CurrentTarget[tgtMachine]);
+    // return (state.myArray[tgtMachine]);
+    // console.log(myArray.カタカナ.カ行.o);
+    // console.log(kishu);
+    // return kishu;
+    // return kishu+"-"+hin;
+    // console.log(tmp);
+  },
 
   getcycleTimeMaijiArray:(state)=>(tgtMachine)=>{
     return state.cycleTimeMaijiArray[(tgtMachine)]
