@@ -32,7 +32,8 @@ export default {
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
     '~/plugins/firebase',
-    '~/plugins/components.js'
+    '~/plugins/components.js',
+    { src: '~/plugins/vue-qrcode-reader', ssr: false }
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components

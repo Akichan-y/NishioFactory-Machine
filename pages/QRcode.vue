@@ -1,58 +1,129 @@
 <template>
   <div>
-
-            <v-text-field
-            label="CODE10" v-model="code10" 
-          ></v-text-field>
-            <v-text-field
-            label="zuban1" v-model="zuban1" 
-          ></v-text-field>
-            <v-text-field
-            label="zuban2" v-model="zuban2" 
-          ></v-text-field>
-            <v-text-field
-            label="hinmei" v-model="hinmei" 
-          ></v-text-field>
-            <v-text-field
-            label="kijunsu" v-model="kijunsu" 
-          ></v-text-field>
-          <v-btn @click="fireSet">セット</v-btn>
+    <div>
+      <p class="error">{{ error }}</p>
+      <p class="decode-result">
+        Last result: <b>{{ result }}</b>
+      </p>
+      <v-container>
+        <v-row>
+          <v-col cols="12" lg="4" md="3">
+            <span class="qr">
+              <qrcode-stream @decode="onDecode" @init="onInit" />
+            </span>
+          </v-col>
+          <v-col>
+            <v-text-field label="CODE10" v-model="code10"></v-text-field>
+            <v-text-field label="zuban1" v-model="zuban1"></v-text-field>
+            <v-text-field label="zuban2" v-model="zuban2"></v-text-field>
+            <v-text-field label="hinmei" v-model="hinmei"></v-text-field>
+            <v-text-field label="kijunsu" v-model="kijunsu"></v-text-field>
+            <v-text-field label="QRinput" v-model="QRResult" @change="QR_test"></v-text-field>
+            <v-btn @click="ReSet">リセット</v-btn>
+            <v-btn @click="fireSet">Set</v-btn>
+          </v-col>
+        </v-row>
+    </v-container>
+    </div>
   </div>
 </template>
+
+<style scoped>
+.qr {
+  width: "400px";
+  height: "400px";
+}
+</style>
 <script>
-import firebase from 'firebase';
+import firebase from "firebase";
 
 export default {
-  data(){
+  layout: "client/simple",
+  data() {
     return {
-      code10:"8082063302",
-      zuban1:"BM15M",
-      zuban2:"10000001-01",
-      hinmei:"ﾌｫｰｸｲﾔｰ",
-      kijunsu:24,
-      machine:"MC027",
-      items:[1,2,3,4,5],
-    }
+      code10: "8082063302",
+      zuban1: "BM15M",
+      zuban2: "10000001-01",
+      hinmei: "ﾌｫｰｸｲﾔｰ",
+      kijunsu: 24,
+      machine: "MC027",
+      QRResult:"",
+      tmpGM01:{GM0101:"",GM0102:"",GM0103:"",kijunsu:0},
+      
+      items: [1, 2, 3, 4, 5],
+
+      result: "",
+      error: ""
+    };
   },
-  methods:{
-    fireSet:function(){
-      this.writeUserData(this.code10,this.zuban1,this.zuban2,this.hinmei,this.kijunsu,this.machine);
+  methods: {
+    QR_test: function(){
+      console.log("QRコードを読みました");
+      // alert("changeだよ")
+      // for(let i= 0;i<3;I++){
+        //   this.tmpGM01.push(this.)
+      // }
+      this.tmpGM01.GM0101=this.QRResult.substr(0,10);
+      this.tmpGM01.GM0102=this.QRResult.substr(10,20);
+      this.tmpGM01.GM0103=this.QRResult.substr(30,15);
+      this.tmpGM01.kijunsu=Number(this.QRResult.substr(45,4));
+      console.log(this.tmpGM01.GM0101);
+      console.log(this.tmpGM01.GM0102);
+      console.log(this.tmpGM01.GM0103);
+      console.log(this.tmpGM01.kijunsu);
+      this.writeUserData(this.tmpGM01.GM0101,this.tmpGM01.GM0103,"",this.tmpGM01.GM0102,this.tmpGM01.kijunsu,"MC027")
+      console.log("QRコードを読みました");
     },
-    writeUserData:function(code10,z1,z2,hin,ki,ma) {
+    ReSet:function(){
+      this.QRResult="";
+    },
+    onDecode(result) {
+      this.result = result;
+    },
+
+    async onInit(promise) {
+      try {
+        await promise;
+      } catch (error) {
+        if (error.name === "NotAllowedError") {
+          this.error = "ERROR: you need to grant camera access permisson";
+        } else if (error.name === "NotFoundError") {
+          this.error = "ERROR: no camera on this device";
+        } else if (error.name === "NotSupportedError") {
+          this.error = "ERROR: secure context required (HTTPS, localhost)";
+        } else if (error.name === "NotReadableError") {
+          this.error = "ERROR: is the camera already in use?";
+        } else if (error.name === "OverconstrainedError") {
+          this.error = "ERROR: installed cameras are not suitable";
+        } else if (error.name === "StreamApiNotSupportedError") {
+          this.error = "ERROR: Stream API is not supported in this browser";
+        }
+      }
+    },
+    fireSet: function() {
+      this.writeUserData(
+        this.code10,
+        this.zuban1,
+        this.zuban2,
+        this.hinmei,
+        this.kijunsu,
+        this.machine
+      );
+    },
+    writeUserData: function(code10, z1, z2, hin, ki, ma) {
       const database = firebase.database();
-       //startTime は初期値９９９を代入していたので、初回が反応していなかったというミス endTimeにしたことで解決。
-      const esp = database.ref('CurrentTarget/'+ma);
-                   
+      //startTime は初期値９９９を代入していたので、初回が反応していなかったというミス endTimeにしたことで解決。
+      const esp = database.ref("CurrentTarget/" + ma);
+
       esp.set({
         code10: code10,
         zuban1: z1,
         zuban2: z2,
-        hinmei : hin,
-        kijunsu:ki,
-        machine:ma
-  });
-}
-
+        hinmei: hin,
+        kijunsu: ki,
+        machine: ma
+      });
+    }
   }
-}
+};
 </script>
