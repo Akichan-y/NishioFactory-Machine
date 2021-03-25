@@ -7,12 +7,16 @@ export const state = () => ({
   genzaiJikan:"",
   // keikajikan:null,
   ProgressSeconds:0,  //経過時間の秒数
+  
 
-  //machineごとの現在のステータスを格納する
+  //machineごとの現在のステータスを格納する（この連想配列を他の配列の基準としている）
  statusArry:{LN034:0,MC024:0,MC026:0,MC027:0,MC028:0,MC031:0,GT999:0},   
+  //machineごとのマシンアワーを格納する。initialize で配列をつくることに挑戦！'21/3/24
+ machineHourArry:{},   
 
    //machineごとのサイクル回数の合算を格納する
- cycleCounter:{LN034:0,MC024:0,MC026:0,MC027:0,MC028:0,MC031:0,GT999:0}, 
+ cycleCounter:{}, 
+//  cycleCounter:{LN034:0,MC024:0,MC026:0,MC027:0,MC028:0,MC031:0,GT999:0}, 
    
    //machineごとのERR回数の合算を格納する
  cycleCounterErr:{LN034:1,MC024:2,MC026:3,MC027:4,MC028:5,MC031:0,GT999:0}, 
@@ -204,6 +208,12 @@ export const mutations = {
     Vue.set(state.CurrentTarget,TgtMachine,TgtValue)
   },
 
+  //machineHourArryを更新する(初期値は、空っぽの連想配列)
+  machineHourArryUD(state,{machineCode,machineHour}){
+      let tmp=machineCode;
+      state.machineHourArry[tmp] = machineHour;
+      // console.log(state.machineHourArry);
+  },
   //センシング反応時間からの時間経過を計算・・・コンポーネントから参照
   StopWatchArryUD(state,{machineCode,StopWatchTime,StopWatchSecondsTime}){
     Vue.set(state.StopWatchArry,machineCode,StopWatchTime)
@@ -242,10 +252,10 @@ sparkValueUD(state,{machineCode,numIndex,nowVal}){
     
     state.sparkValue[machineCode][num]=0;
     num ++;
-    console.log(element)
+    // console.log(element)
     // Vue.set(state.sparkValue[machineCode][key],0);
   };
-  console.log(state.sparkValue[machineCode]);
+  // console.log(state.sparkValue[machineCode]);
 
   let randamNum = Math.floor(Math.random()*9);
 
@@ -259,12 +269,20 @@ sparkValueUD(state,{machineCode,numIndex,nowVal}){
 },
 
 //コンポーネントで使用する、サイクル回数をアップデートするモジュール========================
-cycleCounterUD(state,machineCode){
-  let nowValue= 0;
-  //Vue.setの第三引数として、変数で予め数値を繰り上げておく。
-  nowValue = state.cycleCounter[machineCode]; 
-  nowValue ++;
-  Vue.set(state.cycleCounter,machineCode,nowValue);
+cycleCounterUD(state,{machineCode,first}){
+  if(first){
+    // let tmp=machineCode;
+    state.cycleCounter[machineCode] = 0;
+    // console.log(state.cycleCounter);
+    // console.log(state.machineHourArry);
+  }else{
+    let nowValue= 0;
+    //Vue.setの第三引数として、変数で予め数値を繰り上げておく。
+    nowValue = state.cycleCounter[machineCode]; 
+    nowValue ++;
+    Vue.set(state.cycleCounter,machineCode,nowValue);
+
+  }
 },
 //コンポーネントの、エラー回数をアップデートするモジュール========================
 cycleCounterErrUD(state,machineCode){
@@ -445,7 +463,9 @@ export const getters = {
     // return kishu+"-"+hin;
     // console.log(tmp);
   },
-
+  getmachineHourArry:(state)=>{
+    return state.machineHourArry
+  },
   getcycleTimeMaijiArray:(state)=>(tgtMachine)=>{
     return state.cycleTimeMaijiArray[(tgtMachine)]
   },

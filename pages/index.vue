@@ -8,7 +8,7 @@
 
     <v-col>
       <!-- <p>経過秒：{{KadouJikan_Byou_Test}}   時分秒：{{KadouJikan}}</p> -->
-      <!-- <p>{{KadouJikan}}</p> -->
+      <p>{{KadouJikan}}</p>
      <!-- <p class="cont">{{getGenzaiJikan}}秒経過</p> -->
       <!-- <nuxt-link to="/ren">to ren</nuxt-link> -->
       <!-- {{getSpark()}} -->
@@ -22,7 +22,7 @@
       <v-btn @click='fire'>Fire2!</v-btn>  -->
      </v-col>
     <v-col>
-        <!-- <div id="GenzaiJikan" class="indigo--text text-right text--lighten-2 font-weight-bold display-1">{{GenzaiJikan}}</div> -->
+        <div id="GenzaiJikan" class="my-0 indigo--text text-right text--lighten-2 font-weight-bold subtitle">{{GenzaiJikan}}</div>
     </v-col>
 
    <!-- </v-spacer> -->
@@ -52,6 +52,10 @@
     </v-col>
     <v-col cols="12" sm="6" md="4" lg="3" xl="2">
       <compMachine name="GT999"/>
+    </v-col>
+    <v-col cols="12" sm="6" md="4" lg="3" xl="2">
+      <compMachine2 name="MC027"/>
+      <!-- <compDateMH /> -->
     </v-col>
    
   </v-row>

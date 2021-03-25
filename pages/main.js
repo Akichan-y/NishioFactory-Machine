@@ -11,7 +11,8 @@ import KadouJikan from '~/components/kadouJikan.vue';
 import firebase from 'firebase';
 
 import compMachine from '~/components/compMachine.vue';
-
+import compMachine2 from '~/components/compMachine2.vue';
+import compDateMH from '~/components/compDateMH.vue';
 import Mixin from '~/mixin/mixin.js';
 // import Mixin from '@/mixin/mixin.js';
 // Vuexの使用を宣言
@@ -25,7 +26,9 @@ export default {
     StopWatch, 
     KadouJikan,
     // doughnuts,
-    compMachine
+    compMachine,
+    compMachine2,
+    compDateMH
   },
   data(){
     return{
@@ -101,6 +104,16 @@ export default {
     // getSpark(){
       //   return this.$store.getters['timeBank/getSpark']
       // },
+      getNow:function(){
+        // let nowVthis = nowV.getUTCHours()+':'+nowV.getUTCMinutes()+':' + nowV.getUTCSeconds()
+        // return 
+  
+        let Tgt = new Date();
+        Tgt = this.$store.getters['getNow'];
+        // let Tgt1 = Tgt.getUTCHours()+':'+Tgt.getUTCMinutes()+':' + Tgt.getUTCSeconds();
+      
+        return Tgt
+      },
     getGenzaiJikan(){
       //現在までの経過時間（投入工数）
       return this.$store.getters["timeBank/getKeikaJikanByou"]
@@ -123,16 +136,6 @@ export default {
       return this.$store.getters['counter/counter']
       // return this.$store.getters['timeBank/getD']
       // return this.$store.getters['timeBank/getTest']
-    },
-    getNow:function(){
-      // let nowVthis = nowV.getUTCHours()+':'+nowV.getUTCMinutes()+':' + nowV.getUTCSeconds()
-      // return 
-
-      let Tgt = new Date();
-      Tgt = this.$store.getters['getNow'];
-      // let Tgt1 = Tgt.getUTCHours()+':'+Tgt.getUTCMinutes()+':' + Tgt.getUTCSeconds();
-    
-      return Tgt
     },
     getKadouJikanVuex(){
       return this.$store.getters['getKadouJikan']
@@ -280,6 +283,15 @@ export default {
         this.$store.commit('timeBank/cycleTimeArrayMaijiRst',machine);
       }
       //============================================================
+      let standArry = this.$store.getters["timeBank/getStatusFull"];
+      Object.keys(standArry).forEach(key => 
+        this.$store.commit("timeBank/machineHourArryUD",{machineCode:key,machineHour:0}), 
+      );
+      Object.keys(standArry).forEach(key => 
+        this.$store.commit("timeBank/cycleCounterUD",{machineCode:key,first:true}), //trueの場合は、
+      );
+      //============================================================
+
         this.data_kadou=[];
         this.data_Teishi=[];
         this.data_kadou_total=123;
@@ -367,7 +379,7 @@ export default {
                       this.$store.commit('timeBank/statusArryUD',{machineCode:TgtMachine,statusBool:1});
                       
                       //store.timeBankのカウンター連想配列をアップ
-                      this.$store.commit('timeBank/cycleCounterUD',TgtMachine);
+                      this.$store.commit('timeBank/cycleCounterUD',{machineCode:TgtMachine,first:false});
                     };
                     break;
                 case 'RUN2': //正常運転の停止
@@ -384,7 +396,10 @@ export default {
                       //7番目の0が運転中の時間時間（1が段取り、2が）
                       this.MaijiArrayVuexSet(TgtHStart,TgtH,TgtDStart,TgtDEnd,TgtMachine,TimeDeff,0,'timeBank/cycleTimeArrayMaijiUD');
                       
-                      
+
+                      //store.timeBankの直前のマシンアワーを格納する '21/3/234
+                      this.$store.commit('timeBank/machineHourArryUD',{machineCode:TgtMachine,machineHour:TimeDeff});
+
                       //store.timeBankのセンシング時間・・・本プログラムの反応時刻数値
                       this.$store.commit('timeBank/sensingTimeArryUD',{machineCode:TgtMachine,sensingTime:TgtDEnd});
                       
