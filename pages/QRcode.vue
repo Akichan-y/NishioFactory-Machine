@@ -13,12 +13,15 @@
             </span>
           </v-col>
           <v-col>
+
+            <v-text-field label="machineName" v-model="machineName" ></v-text-field>
+            <v-text-field label="machineNo" v-model="machineNo"></v-text-field>
             <v-text-field label="CODE10" v-model="code10"></v-text-field>
             <v-text-field label="zuban1" v-model="zuban1"></v-text-field>
-            <v-text-field label="zuban2" v-model="zuban2"></v-text-field>
+            <!-- <v-text-field label="zuban2" v-model="zuban2"></v-text-field> -->
             <v-text-field label="hinmei" v-model="hinmei"></v-text-field>
             <v-text-field label="kijunsu" v-model="kijunsu"></v-text-field>
-            <v-text-field label="QRinput" v-model="QRResult" @change="QR_test"></v-text-field>
+            <!-- <v-text-field label="QRinput" v-model="QRResult" @change="QR_test"></v-text-field> -->
             <v-btn @click="ReSet">リセット</v-btn>
             <v-btn @click="fireSet">Set</v-btn>
           </v-col>
@@ -30,8 +33,8 @@
 
 <style scoped>
 .qr {
-  width: "400px";
-  height: "400px";
+  width: "300px";
+  height: "300px";
 }
 </style>
 <script>
@@ -41,12 +44,14 @@ export default {
   layout: "client/simple",
   data() {
     return {
-      code10: "8082063302",
-      zuban1: "BM15M",
-      zuban2: "10000001-01",
-      hinmei: "ﾌｫｰｸｲﾔｰ",
-      kijunsu: 24,
-      machine: "MC027",
+      machineName:"",
+      machineNo:"",
+      code10: "",
+      zuban1: "",
+      zuban2: "",
+      hinmei: "",
+      kijunsu: 0,
+      machine: "",
       QRResult:"",
       tmpGM01:{GM0101:"",GM0102:"",GM0103:"",kijunsu:0},
       
@@ -57,6 +62,7 @@ export default {
     };
   },
   methods: {
+    //QRコードは２会同じモノは読まないみたい
     QR_test: function(){
       console.log("QRコードを読みました");
       // alert("changeだよ")
@@ -76,9 +82,18 @@ export default {
     },
     ReSet:function(){
       this.QRResult="";
+      this.result="";
     },
     onDecode(result) {
       this.result = result;
+      this.machineName=this.result.substr(10,3).trim();
+      this.machineNo=this.result.substr(13,3).trim();
+      this.machine=this.result.substr(10,3).trim()+this.result.substr(13,3).trim()
+      this.code10=result.substr(0,10);
+      this.zuban1=result.substr(59,100).substr(0,result.substr(59,100).length-1).trim();
+      this.hinmei=result.substr(22,10);
+      this.kijunsu=Number(result.substr(16,4));
+      this.fireSet();
     },
 
     async onInit(promise) {
@@ -104,13 +119,13 @@ export default {
       this.writeUserData(
         this.code10,
         this.zuban1,
-        this.zuban2,
+        // this.zuban2,
         this.hinmei,
         this.kijunsu,
         this.machine
       );
     },
-    writeUserData: function(code10, z1, z2, hin, ki, ma) {
+    writeUserData: function(code10, z1, hin, ki, ma) {
       const database = firebase.database();
       //startTime は初期値９９９を代入していたので、初回が反応していなかったというミス endTimeにしたことで解決。
       const esp = database.ref("CurrentTarget/" + ma);
@@ -118,7 +133,7 @@ export default {
       esp.set({
         code10: code10,
         zuban1: z1,
-        zuban2: z2,
+        // zuban2: z2,
         hinmei: hin,
         kijunsu: ki,
         machine: ma
