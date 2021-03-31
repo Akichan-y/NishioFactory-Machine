@@ -1,37 +1,18 @@
 <template>
   <dir>
-    <!-- <v-app></v-app>  これを使うと、component配置で上下の感覚がバカ広くなってしまうのでdirに変更-->
-    <!-- <v-btn class="red" @click="redirect">Redirectテスト</v-btn> -->
-    <!-- <p class="pink--text text--lighten-2 font-weight-bold overline">{{getProgressSeconds}}秒経過</p>
-      <p class="green--text text--lighten-2 font-weight-bold subtitle">{{getStopWatchSecondsArray}}</p> -->
-    <!-- <v-card width=420px height="280px" elevation="15" color="grey lighten-1"> -->
-    <!-- <v-card class="mt-n12 mx-auto" width=300px height="420px" elevation="20" > -->
     <v-card
       class="mt-1 mb-1 mx-auto"
       width="300px"
       height="400px"
       elevation="20"
     >
-      <!-- <v-btn @click='Methods_calcMachineRate'>test</v-btn> -->
-      <!-- <v-btn @click='btnPie'>test</v-btn>
-      <v-btn @click='testtest'>testtest</v-btn> -->
-      <!-- <v-btn @click='testtest'>Detail</v-btn> -->
 
       <v-container class="grey lighten-5">
-        <!-- <div class="mt-3 ml=4" :class="{ contentTgt: isTgt }">
-          {{ getCurrentTarget }}
-        </div> -->
-        <!-- <v-btn @click='RstTgt'>Reseet</v-btn> -->
         <v-row no-gutters class="mb-0 pa-0">
           <v-col cols="4" fluid class="mt-5 pa-0">
-            <!-- <span
-              ><BarChart :data="chartData" :options="options" :height="400"
-            /></span> -->
           </v-col>
 
           <v-col cols="8">
-            <!-- <p class="purple--text my-0 mr-5 text-right  text--lighten-2 font-weight-bold headline">{{getSensingStTime}}</p> -->
-            <!-- <v-container> -->
 
             <v-row class="mt-0 pa-0">
               <p
@@ -39,24 +20,6 @@
               >
               </p>
             </v-row>
-            <!-- </v-container> -->
-            <!-- <v-row class="mt-0 pa-0">
-              <v-col>
-                <p
-                  class="orange--text my-0 mr-1 text-right text--lighten-1 font-weight-bold headline"
-                >
-                  {{ getCycleCounterDataDDR }}回
-                </p>
-              </v-col>
-              <v-col>
-                <p
-                  class="orange--text my-0 mr-1 text-right  text--lighten-1 font-weight-bold headline"
-                >
-                  {{ calcMachineRateDDR }}%
-                </p>
-              </v-col>
-            </v-row> -->
-            <!-- <p class="green--text mt-0 mr-5 text-right  text--lighten-2 font-weight-bold headline">{{getTimeData}}</p> -->
           </v-col>
         </v-row>
         <LineChart2
@@ -66,7 +29,6 @@
           :width="400"
           :height="400"
         />
-        <!-- <p class="green--text mt-0 ml-2 text-left  text--lighten-2 font-weight-bold subtitle">{{getTimeDataMS}}</p> -->
         <p
           class="grey--text mt-1 mb-0 ml-3 text-center  text--darken-1 font-weight-bold subtitle2"
         >
@@ -78,103 +40,6 @@
 </template>
 
 <style>
-.redCollor {
-  color: red;
-}
-
-.contentTgt {
-  /* animation: flash 1s linear infinite; */
-  animation: flash 1s linear;
-  animation-fill-mode: backwards;
-  width: 220px;
-  /* height:30px; */
-  /* background:#0091EA; */
-  background: white;
-  margin: 5px;
-}
-
-@keyframes flash {
-  0%,
-  35%,
-  60%,
-  100% {
-    opacity: 0;
-  }
-
-  25% {
-    opacity: 1;
-    background: #7fff00;
-  }
-
-  50% {
-    opacity: 1;
-    background: #0091ea;
-  }
-
-  75% {
-    opacity: 1;
-    background: #ff1493;
-  }
-}
-
-.cont {
-  color: blue;
-  font-size: 2em;
-  text-align: center;
-}
-
-.btnLamp {
-  cursor: pointer;
-
-  display: inline-block; /* センター寄せ用 */
-  border-radius: 10px; /* まるみ */
-  height: 40px; /* 円の大きさ */
-  width: 240px; /* 円の大きさ */
-  margin-right: 10px;
-  margin-bottom: 5px;
-  margin-top: 20px;
-  text-align: center;
-  line-height: 40px;
-  user-select: none;
-}
-.btnLamp:active {
-  margin-top: 25px;
-  margin-bottom: 0px;
-}
-
-.btnLamp:hover {
-  opacity: 0.8;
-}
-
-.green-circle {
-  background-color: rgb(0, 255, 0); /* ベースカラー */
-  box-shadow: 0 0 3px 3px rgb(37, 112, 4),
-    3px 3px 5px 3px rgb(200, 255, 0) inset; /* 外側のカラー・左上のカラー */
-
-  /* 以下はそろえるだけの為のmargin */
-  border-color: red;
-}
-.red-circle {
-  /* display: inline-block; */
-  color: white;
-  background-color: rgb(255, 0, 0);
-  box-shadow: 0 0 3px 3px rgb(78, 3, 3),
-    3px 3px 5px 3px rgb(238, 161, 147) inset;
-}
-.yellow-circle {
-  /* display: inline-block; */
-  color: black;
-  background-color: rgb(255, 255, 0);
-  box-shadow: 0 0 3px 3px rgb(136, 80, 7),
-    3px 3px 5px 3px rgb(247, 238, 161) inset;
-}
-.black-circle {
-  /* display: inline-block; */
-  color: black;
-  background-color: silver;
-  box-shadow: 0 0 3px 3px rgb(54, 53, 53),
-    3px 3px 5px 3px rgba(0, 0, 0, 0.5) inset;
-}
 </style>
 
 <script>
@@ -319,7 +184,7 @@ export default {
                 // max: 3600, // 最大値
                 // max: 0, // 最大値
                 suggestedMax: 10,
-                stepSize: 900, // 軸間隔
+                stepSize:2, // 軸間隔
                 fontColor: "grey", // 目盛りの色
                 fontSize: 14 // フォントサイズ
               }
@@ -503,20 +368,44 @@ export default {
       this.$router.push("/next?pageName=" + this.name);
     },
     graphUD: function() {
-      console.log("グラフには入っていますよ");
+      // console.log("グラフには入っていますよ");
 
       //折れ線グラフのデータを生成する->積み重ね棒グラフに変更======================================
       // console.log("グラフには入っていますよ");
       this.Line_chartData.labels=[];
       this.Line_chartData.datasets[0].data=[];
       let standArryMachine = this.$store.getters["timeBank/getStatusFull"];
+      console.log(standArryMachine);
       Object.keys(standArryMachine).forEach(key => 
         this.Line_chartData.labels.push(key)
       );
+      console.log(this.Line_chartData.labels);
       // console.log(this.Line_chartData.labels);
       const newChartData2 = Object.assign({}, this.Line_chartData);
       let standArry = this.$store.getters["timeBank/getmachineHourArry"];
-      // console.log("h基準1");
+      console.log("h基準1");
+      let result = this.Line_chartData.labels.map(function(value,index,array){
+        // console.log(this[value]);
+        let arr=this[value];
+        // arr.push(this[value]);
+        // var arr = [1,2,3];
+        // var max = arr.reduce(function(a, b) {
+        //       return Math.max(a, b);
+        // });
+        // let max = arry.reduce(function(a,b){
+          //   return Math.max(a,b);
+        // });
+        // return Math.max(this[value]);
+        // return max;
+        // return arr.reduce((a,b)=>a>b?a:b);
+        return Math.max(arr);
+
+      },standArry);
+      console.log("resultは、");
+          // console.log(arr);
+      console.log(result);
+      // console.log(max);
+      // console.log("standArray!");
       // console.log(standArry);
       Object.keys(standArry).forEach(key => 
         // console.log(standArry[key])
@@ -527,6 +416,7 @@ export default {
         //pushで弾かれて２時間以上悩んだが、結果にはinitialize で、
         //datasets[0].dataとすべきところを、datasets[0]としてしまっていただけ！！
       );
+
       
       // console.log("h基準2");
       // console.log(newChartData2.datasets[0].data);

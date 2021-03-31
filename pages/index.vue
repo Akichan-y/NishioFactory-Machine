@@ -9,6 +9,7 @@
     <v-col>
       <!-- <p>経過秒：{{KadouJikan_Byou_Test}}   時分秒：{{KadouJikan}}</p> -->
       <p>{{KadouJikan}}</p>
+      <!-- <v-btn @click="fireStoreAdd">FireStore</v-btn> -->
      <!-- <p class="cont">{{getGenzaiJikan}}秒経過</p> -->
       <!-- <nuxt-link to="/ren">to ren</nuxt-link> -->
       <!-- {{getSpark()}} -->

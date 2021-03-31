@@ -119,11 +119,14 @@ Line_options: {
       },
 
 
-      items: [
-        { message: 'Foo' ,message2: 'aka' },
-        { message: 'Bar' ,message2: 'shiro' },
-        { message: 'aki' ,message2: 'kiiro' }
-      ],
+      // items: [
+      //   // { message: 'Foo' ,message2: 'aka' },
+      //   // { message: 'Bar' ,message2: 'shiro' },
+      //   // { message: 'aki' ,message2: 'kiiro' },
+      //   { LN034: '00:00:01'},
+      //   { MC024: '00:00:02'},
+      // ],
+      items: { LN034: '00:10:01', MC024: '00:00:02'},
      
       chartsLib: null, 
       // Array will be automatically processed with visualization.arrayToDataTable function
@@ -416,8 +419,19 @@ Line_options: {
     zeroPadding:function(num,length){
       return ('00000000' + String(num)).slice(-length);
     },
+    testMethod:function(){
+      // console.log(this.testCom("LN034"));
+      // console.log(this.testCom["LN034"]);
+      console.log(this.items[LN034]);
+    }
 },
 computed: {
+  testCom:function(){
+    return this.items;
+  },
+  getStopWatchArrayPrimitive(){
+    return this.$store.getters["timeBank/getStopWatchArrayPrimitive"]
+  },
   image_src(){
     return require("~/assets/img/"+this.machineCode+".jpg");
   },

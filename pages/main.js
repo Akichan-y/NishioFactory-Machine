@@ -231,6 +231,22 @@ export default {
     getRandomInt () {
       return Math.floor(Math.random() * (50 - 5 + 1)) + 5
     },
+    fireStoreAdd:function(TgtDEnd,TgtMachine,TimeDeff,Tantou){
+      //FireStoreの接続テストー＞成功
+      const fireStoreDB = firebase.firestore();
+      fireStoreDB.collection("SeisanNippou").add({
+        Date:TgtDEnd,
+        Machine: TgtMachine,
+        Time:TimeDeff,
+        tantou:Tantou
+      })
+      .then((docRef) => {
+          console.log("Document written with ID: ", docRef.id);
+      })
+      .catch((error) => {
+          console.error("Error adding document: ", error);
+      });
+    },
     fire:function(){
       console.clear;
       // console.log('fire!');
@@ -243,6 +259,7 @@ export default {
       //new Date()が冗長で、変数名が乱暴な記述ではあるが、、、下記の通り、
       //スタート時間でソートを掛けた上で、本日の0時0分0秒から、23時59分59秒を対象とする。
       let d2 = new Date();
+      // let d2 = new Date(2021,2,24);
       let y2 = d2.getFullYear();
       let m2 = d2.getMonth();
       let d3 = d2.getDate();
@@ -250,8 +267,12 @@ export default {
       let endD = new Date(y2,m2,d3,23,59,59);
       let startTimestamp = String(Date.parse(startD));
       let endTimestamp = String(Date.parse(endD));
+      console.log("日付セットスタート" + endTimestamp);
+      console.log("日付セットスタート" + startD);
+      console.log("日付セットスタート" + endD);
 
       const database = firebase.database();
+      const fireStoreDB = firebase.firestore();
 
       const CrtTgt = database.ref('CurrentTarget/') //現在加工中の部品を定義している
 
@@ -305,6 +326,7 @@ export default {
             for(let i in data){
             
             let person = data[i];
+            // console.log(person);
             let nowDate=new Date();     //現在時刻
             let nowYYYY=String(nowDate.getFullYear());
             let nowMM=String(nowDate.getMonth()+1);
@@ -381,6 +403,7 @@ export default {
                       //store.timeBankのカウンター連想配列をアップ
                       this.$store.commit('timeBank/cycleCounterUD',{machineCode:TgtMachine,first:false});
                     };
+
                     break;
                 case 'RUN2': //正常運転の停止
                     //store.timeBankのステータス状況をセットする(0は停止)
@@ -392,7 +415,7 @@ export default {
                       
                       //store.timeBankのサイクルタイム運転時間を合計していく (UD:trueは、書き換えアップデート)
                       this.$store.commit('timeBank/cycleTimeArrayUD',{machineCode:TgtMachine,timeDeff:TimeDeff,UD:true});
-                      //機械ごとの毎時時間を算出ｓモジュール
+                      //機械ごとの毎時時間を算出するモジュール
                       //7番目の0が運転中の時間時間（1が段取り、2が）
                       this.MaijiArrayVuexSet(TgtHStart,TgtH,TgtDStart,TgtDEnd,TgtMachine,TimeDeff,0,'timeBank/cycleTimeArrayMaijiUD');
                       
@@ -418,6 +441,8 @@ export default {
                       let dict = {[key]:TimeDeff_mmss};
                       this.data_Teishi_Title.push(dict);
                       
+                      //生産日報FireStoreへの記録
+                      this.fireStoreAdd(TgtDEnd,TgtMachine,TimeDeff,"福島くん");
                     };
                     break;
 

@@ -19,7 +19,7 @@
         <v-list-item-title class="title">
           Bishamon IoT
         </v-list-item-title>
-        <v-btn icon>
+        <v-btn icon @click="drawerFalse">
           <v-icon>mdi-chevron-left</v-icon>
         </v-btn>
       </v-list-item>
@@ -70,7 +70,12 @@ export default {
           icon: 'mdi-chart-bubble',
           title: 'Inspire',
           to: '/inspire'
-        }
+        },
+        {
+          icon: 'mdi-panda',
+          title: '編集',
+          to: '/CRUD'
+        },
       ],
       miniVariant: false,
       right: true,
@@ -78,6 +83,11 @@ export default {
       title: "雅IoT-A.Yama"
     }
   },
+  methods: {
+    drawerFalse:function(){
+      this.drawer = false;
+    }
+  }
   
 }
 </script>

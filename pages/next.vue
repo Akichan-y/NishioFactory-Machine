@@ -7,9 +7,10 @@
         <!-- <v-col  cols="12" sm="6" md="4" lg="4" xl="2"> -->
         <v-col>
           <v-card elevation=12 sm="6" md="4" lg="4" xl="2">
+            <p class="ml-2 indigo--text display-subtitle">稼働状況一覧</p>
             <ul id="example-1">
             <li v-for="(item,index) in this.getStatusFull" :key="item.message">
-              {{index}}
+              {{index}}...
               <span v-if="item==0"  class="grey darken-2  white--text text-center text--lighten-2 font-weight-bold subtitle width--50%">
                 停止中
               </span>
@@ -22,9 +23,11 @@
               <span v-else-if="item==3" class="yellow black--text text-center text--lighten-2 font-weight-bold subtitle">
                 段取中
               </span>
+              <!-- <span>{{items[LN034]}}</span> -->
+              <!-- <span>{{items["LN034"]}}</span> -->
+              <span>{{"......"+getStopWatchArrayPrimitive[index]}}</span>
             </li>
             </ul>
-            
             <!-- <v-btn @click="test">配列テスト</v-btn>
             <v-btn @click="graphUD">graphテスト</v-btn>
             <v-btn @click="fire" pink>Firebaseテスト</v-btn> -->
