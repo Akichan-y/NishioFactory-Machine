@@ -31,6 +31,7 @@
             <!-- <v-btn @click="test">配列テスト</v-btn>
             <v-btn @click="graphUD">graphテスト</v-btn>
             <v-btn @click="fire" pink>Firebaseテスト</v-btn> -->
+              <!-- {{getStopWatchArrayPrimitive}} -->
           </v-card>
 
           <v-card class="mt-2 py-2" elevation=12>

@@ -52,7 +52,7 @@
       <compMachine name="MC031"/>
     </v-col>
     <v-col cols="12" sm="6" md="4" lg="3" xl="2">
-      <compMachine name="GH002"/>
+      <compMachine name="GT999"/>
     </v-col>
     <v-col cols="12" sm="6" md="4" lg="3" xl="2">
       <compMachine2 name="MC027"/>

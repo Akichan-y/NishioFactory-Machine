@@ -441,8 +441,8 @@ export default {
                       let dict = {[key]:TimeDeff_mmss};
                       this.data_Teishi_Title.push(dict);
                       
-                      //生産日報FireStoreへの記録
-                      this.fireStoreAdd(TgtDEnd,TgtMachine,TimeDeff,"福島くん");
+                      //生産日報FireStoreへの記録 //functionsで行うべき
+                      // this.fireStoreAdd(TgtDEnd,TgtMachine,TimeDeff,"福島くん");
                     };
                     break;
 
@@ -469,6 +469,31 @@ export default {
                         //機械ごとの毎時時間を算出ｓモジュール
                         //7番目の0が運転中の時間時間（1が段取り、2が）
                         this.MaijiArrayVuexSet(TgtHStart,TgtH,TgtDStart,TgtDEnd,TgtMachine,TimeDeff,1,'timeBank/cycleTimeArrayMaijiUD');
+                      };
+                      break;
+                  case 'KKT1': //段取りの開始(2は異常停止赤ランプ)
+                    //store.timeBankのステータス状況をセットする（１は運転中）
+
+                    if(TimeDeff > 2){ //2秒以下のチャタリングのようなデータを排除する
+                      this.$store.commit('timeBank/statusArryUD',{machineCode:TgtMachine,statusBool:4});          
+                      //store.timeBankのカウンター連想配列をアップ
+                      this.$store.commit('timeBank/cycleCounterKKTUD',TgtMachine);
+                    };
+                    break;
+
+                  case 'KKT2': //段取りの終了
+                      //予め現在のステータスが段取り中であることを確認する。チャタリング防止策からの重複になることを避ける為
+                      if(this.$store.getters['timeBank/getStatus'](TgtMachine)==4){
+
+                        //store.timeBankのステータス状況をセットする（0は停止）
+                        this.$store.commit('timeBank/statusArryUD',{machineCode:TgtMachine,statusBool:0}); 
+                        
+                        //store.timeBankのサイクルタイム運転時間を合計していく
+                        // this.$store.commit('timeBank/cycleTimeArrayDDRUD',{machineCode:TgtMachine,timeDeff:TimeDeff});
+
+                        //機械ごとの毎時時間を算出ｓモジュール
+                        //7番目の0が運転中の時間（1が段取り、2がエラー？、3が計画停止）
+                        this.MaijiArrayVuexSet(TgtHStart,TgtH,TgtDStart,TgtDEnd,TgtMachine,TimeDeff,4,'timeBank/cycleTimeArrayMaijiUD');
                       };
                       break;
 

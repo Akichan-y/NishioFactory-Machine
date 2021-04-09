@@ -34,6 +34,9 @@ export const state = () => ({
  //machineごとの段取り時間の合算を格納する
  cycleTimeArrayDDR:{LN034:0,MC024:0,MC026:0,MC027:50,MC028:0,MC031:0,GT999:0},   
 
+ //machineごとの停止時間の合算を格納する
+ cycleTimeArrayKKT:{LN034:0,MC024:0,MC026:0,MC027:50,MC028:0,MC031:0,GT999:0},   
+
   //machineごとの時間あたりのサイクルタイムの合算を格納する（８時台から１８時台まで１１時間）
   cycleTimeMaijiArray:{
         LN034:[0,0,0,0,0,0,0,0,0,0,0],
@@ -360,6 +363,15 @@ cycleTimeArrayDDRUD(state,{machineCode,timeDeff}){
   Vue.set(state.cycleTimeArrayDDR,machineCode,nowValue);
 
 },
+//計画停止時間をアップデートする===============================================================
+cycleTimeArrayKKTUD(state,{machineCode,timeDeff}){
+  // let nowValue = state.cycleTimeArray["LN034"]; 
+  
+  let nowValue = state.cycleTimeArrayKKT[machineCode]; 
+  nowValue += timeDeff;
+  Vue.set(state.cycleTimeArrayKKT,machineCode,nowValue);
+
+},
 
 //機械ごと時間あたりの運転時間を足し込みアップデートする==========
 cycleTimeArrayMaijiUD(state,{machineCode,start,end,elapsed,timeDeff,nowTgt}){
@@ -375,10 +387,14 @@ cycleTimeArrayMaijiUD(state,{machineCode,start,end,elapsed,timeDeff,nowTgt}){
         state.cycleTimeMaijiArrayDDR[machineCode][i]+=elapsed[i];
         // console.log("段取りの値配列"+state.cycleTimeMaijiArrayDDR[machineCode][i]);
         break;
-        case 2:
+      case 2:
           state.cycleTimeMaijiArrayERR[machineCode][i]+=elapsed[i];
           // console.log("異常の値配列"+state.cycleTimeMaijiArrayDDR[machineCode][i]);
-        break;
+          break;
+      case 3:
+          state.cycleTimeMaijiArrayKKT[machineCode][i]+=elapsed[i];
+          // console.log("異常の値配列"+state.cycleTimeMaijiArrayDDR[machineCode][i]);
+          break;
     };
     i ++;
   };

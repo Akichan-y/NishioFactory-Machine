@@ -1,16 +1,14 @@
 <template>
-
+<div>
+  ara?
   <v-layout
     column
     justify-center
     align-center
   >
-              
-
     <v-card v-if="users">
       <v-card-title>
-        <!-- ユーザー一覧 -->
-          <span class="headline">{{ formTitle }}</span>
+        ユーザー一覧
         <v-spacer />
         <v-text-field
           v-model="search"
@@ -19,23 +17,15 @@
           sigle-line
         />
       </v-card-title>
-      <!-- <template v-slot:activator="{ on }"> -->
-          <v-btn fab dark small class="mb-2 ml-2"
-            @click="add"
-          >
-            <v-icon dark>
-              mdi-plus
-            </v-icon>
-          </v-btn>
-        <!-- </template> -->
       <v-data-table
         :headers="headers"
         :items="users"
         :items-per-page="5"
         :search="search"
+        sort-by="id"
+        :sort-desc="true"
         class="elevation-1"
       >
-
 
         <template v-slot:top>
           <v-dialog v-model="dialog" max-width="500px">
@@ -68,39 +58,52 @@
             </v-card>
           </v-dialog>
         </template>
-        <template v-slot:item.actions="{ item }">
-          <v-icon
-            small
-            @click="edit(item)"
+
+        <template v-slot:activator="{ on }">
+          <v-btn fab dark small color="dark" class="mb-2"
+            @click="add"
           >
-            mdi-pencil
-          </v-icon>
-          <v-icon
-            small
-            @click="remove(item)"
-          >
-            mdi-delete
-          </v-icon>
+            <v-icon dark>
+              mdi-plus
+            </v-icon>
+          </v-btn>
         </template>
+
+      <template v-slot:item.actions="{ item }">
+        <v-icon
+          small
+          @click="edit(item)"
+        >
+          mdi-pencil
+        </v-icon>
+        <v-icon
+          small
+          @click="remove(item)"
+        >
+          mdi-delete
+        </v-icon>
+      </template>
+
+
       </v-data-table>
     </v-card>
   </v-layout>
+  
+  </div>
 </template>
 
 <script>
 export default {
   data () {
     return {
-      dialog: false,
       search: '',
       headers: [
         { text: 'ID', value: 'id' },
         { text: 'メールアドレス', value: 'email' },
         { text: '名前', value: 'name' },
         { text: 'メモ', value: 'memo' },
-        { text: '操作', value: 'actions' }
+        { text: '操作', value: 'actions'}
       ],
-      user: {},
     }
   },
   computed: {
@@ -121,7 +124,7 @@ export default {
     },
     create () {
       const payload = { user: this.user }
-      this.$store.commit('addUser', payload)
+      this.$store.commit('crud/addUser', payload)
       this.close()
     },
     edit (user) {

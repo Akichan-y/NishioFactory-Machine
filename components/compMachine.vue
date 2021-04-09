@@ -40,11 +40,18 @@
           >
             {{ name }} 段取中 {{ getSensingStTime }}〜
           </div>
+          <div
+            class="pink-circle btnLamp"
+            v-else-if="getStatusData == 4"
+            @click="redirect"
+          >
+            {{ name }} 計画停止中 {{ getSensingStTime }}〜
+          </div>
           <div class="black-circle btnLamp" v-else @click="redirect">
             {{ name }} 停止中{{ getSensingStTime }}〜
           </div>
         </v-row>
-        <div class="mt-3 ml=4" :class="{ contentTgt: isTgt }">
+        <div class="mt-3 ml=2 text-left caption font-size=12px" :class="{ contentTgt: isTgt }">
           {{ getCurrentTarget }}
         </div>
         <!-- <v-btn @click='RstTgt'>Reseet</v-btn> -->
@@ -254,18 +261,10 @@
 .red-circle {
   /* display: inline-block; */
   color: white;
+  
   background-color: rgb(255, 0, 0);
   box-shadow: 0 0 3px 3px rgb(78, 3, 3),
     3px 3px 5px 3px rgb(238, 161, 147) inset;
-  /* height:40px;
-    width:240px; */
-  /* border-radius:10px;
-    margin-right: 10px;
-    margin-bottom: 5px;
-    margin-top: 20px;
-    text-align: center;
-    line-height: 40px;
-    user-select: none; */
 }
 .yellow-circle {
   /* display: inline-block; */
@@ -273,22 +272,22 @@
   background-color: rgb(255, 255, 0);
   box-shadow: 0 0 3px 3px rgb(136, 80, 7),
     3px 3px 5px 3px rgb(247, 238, 161) inset;
-  /* height:40px;
-    width:240px; */
-  /* border-radius:10px;
-    margin-right: 10px;
-    margin-bottom: 5px;
-    margin-top: 20px;
-    text-align: center;
-    line-height: 40px;
-    user-select: none; */
+
+}
+.pink-circle {
+  /* display: inline-block; */
+  color: black;
+  background-color: rgb(247, 174, 234);
+  box-shadow: 0 0 3px 3px rgb(122, 56, 106),
+    3px 3px 5px 3px rgb(243, 146, 240) inset;
+
 }
 .black-circle {
   /* display: inline-block; */
   color: black;
   background-color: silver;
   box-shadow: 0 0 3px 3px rgb(54, 53, 53),
-    3px 3px 5px 3px rgba(0, 0, 0, 0.5) inset;
+    3px 3px 5px 3px rgba(172, 169, 169, 0.5) inset;
   /* height:40px;
     width:240px; */
   /* border-radius:10px;
@@ -461,7 +460,7 @@ export default {
               scaleLabel: {
                 // 軸ラベル
                 display: false, // 表示の有無
-                labelString: "縦軸ラベル", // ラベル
+                labelString: "分", // ラベル
                 fontFamily: "sans-serif",
                 fontColor: "grey", // 文字の色
                 fontFamily: "sans-serif",
@@ -475,8 +474,8 @@ export default {
               ticks: {
                 // 目盛り
                 min: 0, // 最小値
-                max: 3600, // 最大値
-                stepSize: 900, // 軸間隔
+                max: 60, // 最大値
+                stepSize: 15, // 軸間隔
                 fontColor: "grey", // 目盛りの色
                 fontSize: 10 // フォントサイズ
               }
@@ -830,9 +829,9 @@ export default {
       // console.log("Lengthは、" + Line_unten.length);
       for (let i = 0; i < Line_unten.length; i++) {
         // console.log("For "+i+" 回目"+Line_newChartData.datasets[0].data[i]);
-        Line_newChartData.datasets[0].data[i] = Line_unten[i];
-        Line_newChartData.datasets[1].data[i] = Line_DDR[i];
-        Line_newChartData.datasets[2].data[i] = Line_ERR[i];
+        Line_newChartData.datasets[0].data[i] = Line_unten[i]/60;
+        Line_newChartData.datasets[1].data[i] = Line_DDR[i]/60;
+        Line_newChartData.datasets[2].data[i] = Line_ERR[i]/60;
       }
       this.Line_chartData = Line_newChartData;
 

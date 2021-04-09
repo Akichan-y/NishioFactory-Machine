@@ -73,7 +73,7 @@ Line_options: {
                 stacked: true,                //積み重ねは、X,Yそれぞれにtrue
                 scaleLabel: {                 // 軸ラベル
                     display: true,                // 表示設定
-                    labelString: '時間（秒）',    // ラベル
+                    labelString: '時間（分）',    // ラベル
                     fontColor: "grey",             // 文字の色
                     fontSize: 12                  // フォントサイズ
                 },
@@ -371,7 +371,7 @@ Line_options: {
         Line_newChartData.labels.push(GraphTitle);
       };
         // console.log(GraphTitle,nowState,nowSeconds);
-        Line_newChartData.datasets[nowState].data.push(nowSeconds);
+        Line_newChartData.datasets[nowState].data.push(nowSeconds/60);
         // console.log(Line_newChartData.datasets);
       
   

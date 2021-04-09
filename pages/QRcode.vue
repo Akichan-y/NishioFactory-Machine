@@ -90,7 +90,7 @@ export default {
       this.machineNo=this.result.substr(13,3).trim();
       this.machine=this.result.substr(10,3).trim()+this.result.substr(13,3).trim()
       this.code10=result.substr(0,10);
-      this.zuban1=result.substr(59,100).substr(0,result.substr(59,100).length-1).trim();
+      this.zuban1=result.substr(50,100).substr(0,result.substr(50,100).length-1).trim();
       this.hinmei=result.substr(22,10);
       this.kijunsu=Number(result.substr(16,4));
       this.fireSet();
