@@ -67,6 +67,15 @@ export const state = () => ({
         MC031:[0,0,0,0,0,0,0,0,0,0,0],
         GT999:[0,0,0,0,0,0,0,0,0,0,0],
       },     
+  cycleTimeMaijiArrayKKT:{
+        LN034:[0,0,0,0,0,0,0,0,0,0,0],
+        MC024:[0,0,0,0,0,0,0,0,0,0,0],
+        MC026:[0,0,0,0,0,0,0,0,0,0,0],
+        MC027:[0,0,0,0,0,0,0,0,0,0,0],
+        MC028:[0,0,0,0,0,0,0,0,0,0,0],
+        MC031:[0,0,0,0,0,0,0,0,0,0,0],
+        GT999:[0,0,0,0,0,0,0,0,0,0,0],
+      },     
     CurrentTarget:{
         LN034:"BM15M-ﾌﾟﾚｯｼｬｰﾌﾟﾚｰﾄ 24ｹ",
         MC024:"ABM10-ﾊﾝﾄﾞﾙ 24ｹ",
@@ -366,7 +375,7 @@ cycleTimeArrayDDRUD(state,{machineCode,timeDeff}){
 //計画停止時間をアップデートする===============================================================
 cycleTimeArrayKKTUD(state,{machineCode,timeDeff}){
   // let nowValue = state.cycleTimeArray["LN034"]; 
-  
+  // console.log("●●●●●●●●●●●●●●KKDUD!");
   let nowValue = state.cycleTimeArrayKKT[machineCode]; 
   nowValue += timeDeff;
   Vue.set(state.cycleTimeArrayKKT,machineCode,nowValue);
@@ -393,7 +402,7 @@ cycleTimeArrayMaijiUD(state,{machineCode,start,end,elapsed,timeDeff,nowTgt}){
           break;
       case 3:
           state.cycleTimeMaijiArrayKKT[machineCode][i]+=elapsed[i];
-          // console.log("異常の値配列"+state.cycleTimeMaijiArrayDDR[machineCode][i]);
+          // console.log("計画停止の値配列"+state.cycleTimeMaijiArrayDDR[machineCode][i]);
           break;
     };
     i ++;
@@ -409,6 +418,7 @@ cycleTimeArrayMaijiRst(state){
       state.cycleTimeMaijiArray[element][i]=0;
       state.cycleTimeMaijiArrayDDR[element][i]=0;
       state.cycleTimeMaijiArrayERR[element][i]=0;
+      state.cycleTimeMaijiArrayKKT[element][i]=0;
       // console.log(element+"リセット出来ているかな？"+state.cycleTimeMaijiArray[element]);
     }
   };
@@ -431,6 +441,10 @@ cycleTimeArrayErrRst(state,machineCode){
 //段取り時間をリセットする=============================================
 cycleTimeArrayDDRRst(state,machineCode){
   Vue.set(state.cycleTimeArrayDDR,machineCode,0);
+},
+//計画停止時間をリセットする=============================================
+cycleTimeArrayKKTRst(state,machineCode){
+  Vue.set(state.cycleTimeArrayKKT,machineCode,0);
 },
 
   TB_Kadoujikan(state,TgtValue){
@@ -491,6 +505,9 @@ export const getters = {
   },
   getcycleTimeMaijiArrayERR:(state)=>(tgtMachine)=>{
     return state.cycleTimeMaijiArrayERR[(tgtMachine)]
+  },
+  getcycleTimeMaijiArrayKKT:(state)=>(tgtMachine)=>{
+    return state.cycleTimeMaijiArrayKKT[(tgtMachine)]
   },
 
   getStopWatchArray:(state)=>(tgtMachine)=>{
@@ -557,6 +574,9 @@ export const getters = {
   //DRRサイクルタイム合算
   getCycleArrayDDR:(state)=>(tgtMachine)=>{
     return state.cycleTimeArrayDDR[tgtMachine]
+  },
+  getCycleArrayKKT:(state)=>(tgtMachine)=>{
+    return state.cycleTimeArrayKKT[tgtMachine]
   },
 
   // },

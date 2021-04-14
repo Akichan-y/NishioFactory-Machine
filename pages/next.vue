@@ -23,6 +23,9 @@
               <span v-else-if="item==3" class="yellow black--text text-center text--lighten-2 font-weight-bold subtitle">
                 段取中
               </span>
+              <span v-else-if="item==4" class="pink lighten-4 green--text text-center text--darken-2 font-weight-bold subtitle">
+                計画停止中
+              </span>
               <!-- <span>{{items[LN034]}}</span> -->
               <!-- <span>{{items["LN034"]}}</span> -->
               <span>{{"......"+getStopWatchArrayPrimitive[index]}}</span>

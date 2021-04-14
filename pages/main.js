@@ -301,6 +301,7 @@ export default {
         this.$store.commit('timeBank/cycleTimeArrayRst',machine);
         this.$store.commit('timeBank/cycleTimeArrayErrRst',machine);
         this.$store.commit('timeBank/cycleTimeArrayDDRRst',machine);
+        this.$store.commit('timeBank/cycleTimeArrayKKTRst',machine);
         this.$store.commit('timeBank/cycleTimeArrayMaijiRst',machine);
       }
       //============================================================
@@ -476,8 +477,8 @@ export default {
 
                     if(TimeDeff > 2){ //2秒以下のチャタリングのようなデータを排除する
                       this.$store.commit('timeBank/statusArryUD',{machineCode:TgtMachine,statusBool:4});          
-                      //store.timeBankのカウンター連想配列をアップ
-                      this.$store.commit('timeBank/cycleCounterKKTUD',TgtMachine);
+                      //store.timeBankのカウンター連想配列をアップ=>計画停止ではとりあえず除外
+                      // this.$store.commit('timeBank/cycleCounterKKTUD',TgtMachine);
                     };
                     break;
 
@@ -488,12 +489,12 @@ export default {
                         //store.timeBankのステータス状況をセットする（0は停止）
                         this.$store.commit('timeBank/statusArryUD',{machineCode:TgtMachine,statusBool:0}); 
                         
-                        //store.timeBankのサイクルタイム運転時間を合計していく
-                        // this.$store.commit('timeBank/cycleTimeArrayDDRUD',{machineCode:TgtMachine,timeDeff:TimeDeff});
+                        // store.timeBankの計画停止サイクルタイム時間を合計していく
+                        this.$store.commit('timeBank/cycleTimeArrayKKTUD',{machineCode:TgtMachine,timeDeff:TimeDeff});
 
                         //機械ごとの毎時時間を算出ｓモジュール
                         //7番目の0が運転中の時間（1が段取り、2がエラー？、3が計画停止）
-                        this.MaijiArrayVuexSet(TgtHStart,TgtH,TgtDStart,TgtDEnd,TgtMachine,TimeDeff,4,'timeBank/cycleTimeArrayMaijiUD');
+                        this.MaijiArrayVuexSet(TgtHStart,TgtH,TgtDStart,TgtDEnd,TgtMachine,TimeDeff,3,'timeBank/cycleTimeArrayMaijiUD');
                       };
                       break;
 

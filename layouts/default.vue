@@ -72,6 +72,11 @@ export default {
           to: '/inspire'
         },
         {
+          icon: 'mdi-camera',
+          title: 'Gallery',
+          to: '/Gallery'
+        },
+        {
           icon: 'mdi-panda',
           title: '編集',
           to: '/CRUD'

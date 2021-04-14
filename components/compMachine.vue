@@ -370,8 +370,8 @@ export default {
         // データ詳細
         datasets: [
           {
-            label: ["運転", "異常", "停止"],
-            backgroundColor: ["limegreen", "#FFBB00", "#D9073D", "#AAAAAA"],
+            label: ["運転", "異常", "停止","計画停止"],
+            backgroundColor: ["limegreen", "#FFBB00", "#D9073D" ,"#F9C1CF","#AAAAAA"],
             data: [10, 10, 10, 10]
           }
         ]
@@ -414,6 +414,11 @@ export default {
           {
             label: ["ERR"],
             backgroundColor: "#D9073D",
+            data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+          },
+          {
+            label: ["KKTS"],
+            backgroundColor: "#F9C1CF",
             data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
           }
         ]
@@ -677,6 +682,11 @@ export default {
                 "停止" + this.getStopWatchArray + "後から段取中！";
               break;
             }
+            case 4: {
+              this.chokuzenSW =
+                "停止" + this.getStopWatchArray + "後に計画停止！";
+              break;
+            }
           }
           break;
         }
@@ -704,13 +714,22 @@ export default {
                 this.chokuzenSW = "段取りからの、異常発生！？";
                 break;
               }
+              case 4: {
+                this.chokuzenSW = "計画停止からの、異常発生！？";
+                break;
+              }
             }
           }
           break;
         case 3: {
           this.chokuzenSW = "段取り時間は" + this.getStopWatchArray + "でした";
           break;
+          }
+        case 4: {
+          this.chokuzenSW = "計画停止は" + this.getStopWatchArray + "でした";
+          break;
         }
+      
       }
     }
   },
@@ -797,11 +816,13 @@ export default {
       let err = this.$store.getters["timeBank/getCycleArrayErr"](this.nameAB);
       // console.log("ERR"+this.nameAB+"---"+err);
       let ddr = this.$store.getters["timeBank/getCycleArrayDDR"](this.nameAB); //段取り時間
+      let kkt = this.$store.getters["timeBank/getCycleArrayKKT"](this.nameAB); //計画停止時間
 
       newChartData.datasets[0].data[0] = unten;
       newChartData.datasets[0].data[1] = ddr;
       newChartData.datasets[0].data[2] = err;
-      newChartData.datasets[0].data[3] = kadou - unten - ddr - err;
+      newChartData.datasets[0].data[3] = kkt;
+      newChartData.datasets[0].data[4] = kadou - unten - ddr - err -kkt;
       // console.log(newChartData.datasets[0])
       this.chartData = newChartData;
 
@@ -823,6 +844,13 @@ export default {
       let Line_ERR = this.$store.getters["timeBank/getcycleTimeMaijiArrayERR"](
         this.nameAB
       );
+      let Line_KKT = this.$store.getters["timeBank/getcycleTimeMaijiArrayKKT"](
+        this.nameAB
+      );
+      
+      console.log("☆☆☆☆計画停止時間は、"+Line_KKT);
+      // console.log("☆☆☆☆計画停止時間は、"+this.$store.getters["timeBank/getcycleTimeMaijiArrayKKT"]);
+      // console.log("☆☆☆☆"+this.nameAB);
       // console.log("☆☆☆☆"+this.nameAB);
       // console.log("★★★★★★★★★★★"+Line_unten);
       // let len = Line_unten.length;
@@ -832,6 +860,7 @@ export default {
         Line_newChartData.datasets[0].data[i] = Line_unten[i]/60;
         Line_newChartData.datasets[1].data[i] = Line_DDR[i]/60;
         Line_newChartData.datasets[2].data[i] = Line_ERR[i]/60;
+        Line_newChartData.datasets[3].data[i] = Line_KKT[i]/60;
       }
       this.Line_chartData = Line_newChartData;
 
