@@ -109,16 +109,7 @@ export default {
             ],
             data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
           },
-          // {
-          //   label: ["DDR"],
-          //   backgroundColor: "#FFBB00",
-          //   data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-          // },
-          // {
-          //   label: ["ERR"],
-          //   backgroundColor: "#D9073D",
-          //   data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-          // }
+
         ]
       },
       Line_options: {
@@ -383,7 +374,7 @@ export default {
       // console.log(this.Line_chartData.labels);
       const newChartData2 = Object.assign({}, this.Line_chartData);
       let standArry = this.$store.getters["timeBank/getmachineHourArry"];
-      console.log("h基準1");
+      // console.log("h基準1");
       let result = this.Line_chartData.labels.map(function(value,index,array){
         // console.log(this[value]);
         let arr=this[value];

@@ -62,7 +62,7 @@ export default {
           to: '/'
         },
         {
-          icon: 'mdi-qrcode',
+          icon: 'mdi-qrcode-scan',
           title: 'QR読取り',
           to: '/QRcode'
         },
@@ -75,6 +75,11 @@ export default {
           icon: 'mdi-camera',
           title: 'Gallery',
           to: '/Gallery'
+        },
+        {
+          icon: 'mdi-file-powerpoint-box',
+          title: 'HPライン',
+          to: '/next_HP'
         },
         {
           icon: 'mdi-panda',

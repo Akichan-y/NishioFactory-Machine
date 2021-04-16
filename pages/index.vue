@@ -1,6 +1,6 @@
 <template>
 <div>
-<!-- <nuxt-link to="/next?pageName=nextだよ">Go to Next</nuxt-link> -->
+<nuxt-link to="/next_HP">Go to Next_HP</nuxt-link>
 <v-container>
   <v-row>
    <!-- <v-spacer> -->

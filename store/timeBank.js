@@ -15,6 +15,9 @@ export const state = () => ({
  //machineごとのマシンアワーを格納する。initialize で配列をつくることに挑戦！'21/3/24
  machineHourArry:{},   
 
+ //machineごとのマシンアワー残り時間'21/4/14
+ machineHourCutArry:{},   
+
    //machineごとのサイクル回数の合算を格納する
  cycleCounter:{}, 
 //  cycleCounter:{LN034:0,MC024:0,MC026:0,MC027:0,MC028:0,MC031:0,GT999:0}, 
@@ -227,6 +230,12 @@ export const mutations = {
       state.machineHourArry[tmp] = machineHour;
       // console.log(state.machineHourArry);
   },
+  //machineHourArryを更新する(初期値は、空っぽの連想配列)
+  machineHourCutArryUD(state,{machineCode,machineHour}){
+      let tmp=machineCode;
+      state.machineHourCutArry[tmp] = machineHour;
+      // console.log(state.machineHourArry);
+  },
   //センシング反応時間からの時間経過を計算・・・コンポーネントから参照
   StopWatchArryUD(state,{machineCode,StopWatchTime,StopWatchSecondsTime}){
     Vue.set(state.StopWatchArry,machineCode,StopWatchTime)
@@ -242,9 +251,9 @@ export const mutations = {
     Vue.set(state.sensingTimeArry,machineCode,sensingTime)
   },
   //サイクルタイムの機械ごとの時間あたり合計時間
-  sensingTimeArryUD(state,{machineCode,sensingTime}){
-    Vue.set(state.sensingTimeArry,machineCode,sensingTime)
-  },
+  // sensingTimeArryUD(state,{machineCode,sensingTime}){
+  //   Vue.set(state.sensingTimeArry,machineCode,sensingTime)
+  // },
   
   //CDSセンサー反応スタート時間テキスト形式
   sensingTimeStArryUD(state,{machineCode,sensingTime}){
@@ -496,6 +505,12 @@ export const getters = {
   },
   getmachineHourArry:(state)=>{
     return state.machineHourArry
+  },
+  getmachineHourArryTgt:(state)=>(tgtMachine)=>{
+    return state.machineHourArry[(tgtMachine)]
+  },
+  getmachineHourCutArry:(state)=>(tgtMachine)=>{
+    return state.machineHourCutArry[(tgtMachine)]
   },
   getcycleTimeMaijiArray:(state)=>(tgtMachine)=>{
     return state.cycleTimeMaijiArray[(tgtMachine)]

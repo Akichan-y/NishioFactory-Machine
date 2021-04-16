@@ -9,7 +9,7 @@
     <v-card
       class="mt-1 mb-1 mx-auto"
       width="300px"
-      height="400px"
+      height="500px"
       elevation="20"
     >
       <!-- <v-btn @click='Methods_calcMachineRate'>test</v-btn> -->
@@ -118,11 +118,19 @@
           :height="200"
         />
         <!-- <p class="green--text mt-0 ml-2 text-left  text--lighten-2 font-weight-bold subtitle">{{getTimeDataMS}}</p> -->
-        <p
-          class="grey--text mt-1 mb-0 ml-3 text-center  text--darken-1 font-weight-bold subtitle2"
-        >
+        <p class="grey--text mt-1 mb-0 ml-3 text-center  text--darken-1 font-weight-bold subtitle2">
           {{ chokuzenSW }}
         </p>
+
+
+        <MachineH_Porogress
+          class="mt-2"
+          :data="Progress_Data"
+          :options="Progress_options"
+          :width="400"
+          :height="200"
+        />
+
         <!-- <table border="1" width="240" class="mt-2">
             <tr  align="center">
                 <th></th>
@@ -305,6 +313,7 @@ import Vue from "vue";
 import Vuex from "vuex";
 import BarChart from "@/components/BarChart.vue";
 import LineChart from "@/components/LineChart.vue";
+import MachineH_Porogress from "@/components/MachineH_Progress.vue";
 
 const gradients = [
   ["#222"],
@@ -329,7 +338,7 @@ export default {
       isTgt: false,
       nameAB: this.name, //propsからdataに移すことで、
       //変数として利用できるようになる。
-      chokuzenSW: "",
+      chokuzenSW: "aaa",
       labels: [
         "8am",
         "9am",
@@ -495,13 +504,114 @@ export default {
         //               display: false
         //           }
       },
+      //**********************************
+      // マシンアワープログレスバー
+      Progress_Data: {
+        labels: [
+        ],
+        
+        // データ詳細
+        datasets: [
+          {
+            label: ["RUN"],
+            backgroundColor: [
+                // 'rgba(50, 255, 0,1.5)',//マシンアワー残り
+                'rgba(125,125, 125,0.5)',//マシンアワー残り
+                ,//マシンアワー残り
+            ],
+            data: [0]
+          },
+          {
+            label: ["RUN"],
+            backgroundColor: [
+                'rgba(255, 99, 132, 0.8)',//マシンアワー残り
+            ],
+            data: [0]
+          },
+
+        ]
+      },
+      Progress_options: {
+        responsive: true,
+        title: {
+          display: true, // タイトルを表示する
+          text: 'マシンアワーProgressBar' // タイトルのテキスト
+        },
+        legend: {
+          // position: 'right',
+          display: false,
+          labels: {
+            // fontSize: 28,
+          }
+        },
+        scales: {
+          // 軸設定
+          xAxes: [
+            // Ｘ軸設定
+            {
+              stacked: true, //積み重ねは、X,Yそれぞれにtrue
+              scaleLabel: {
+                // 軸ラベル
+                display: true, // 表示設定
+                labelString: "マシンアワー残り（秒）", // ラベル
+                fontColor: "grey", // 文字の色
+                fontSize: 12 // フォントサイズ
+              },
+              gridLines: {
+                // 補助線
+                // color: "rgba(0, 0, 255, 0.2)", // 補助線の色
+                color: "rgba(0, 0, 255, 0.2)" // 補助線の色
+              },
+              ticks: {
+                // 目盛り
+                min: 0, // 最小値
+                max: 600, // 最大値
+                fontColor: "grey", // 目盛りの色
+                fontSize: 12 // フォントサイズ
+              }
+            }
+          ],
+          yAxes: [
+            // Ｙ軸設定
+            {
+              // stacked:true,
+              stacked: true,
+              scaleLabel: {
+                // 軸ラベル
+                display: false, // 表示の有無
+                labelString: "縦軸ラベル", // ラベル
+                fontFamily: "sans-serif",
+                fontColor: "grey", // 文字の色
+                fontFamily: "sans-serif",
+                fontSize: 20 // フォントサイズ
+              },
+              gridLines: {
+                // 補助線
+                color: "rgba(0, 0, 255, 0.2)", // 補助線の色
+                zeroLineColor: "black" // y=0（Ｘ軸の色）
+              },
+              ticks: {
+                // 目盛り
+                min: 0, // 最小値
+                max: 60, // 最大値
+                // max: 0, // 最大値
+                suggestedMax: 10,
+                stepSize:2, // 軸間隔
+                fontColor: "grey", // 目盛りの色
+                fontSize: 14 // フォントサイズ
+              }
+            }
+          ]
+        }
+      },
       addFlag: false
       //=********************************************************************
     };
   },
   components: {
     BarChart,
-    LineChart
+    LineChart,
+    MachineH_Porogress
   },
   computed: {
     // getSensingTimeStart(){
@@ -661,7 +771,7 @@ export default {
       // console.log("ステータスは、" + newStatus,oldStatus);
       // console.log(this.getStopWatchArray);
       this.chokuzenSW = this.getStopWatchArray;
-
+      console.log("ストップウォッチは大丈夫なのでは？");
       switch (oldStatus) {
         case 0: {
           switch (newStatus) {
@@ -848,7 +958,7 @@ export default {
         this.nameAB
       );
       
-      console.log("☆☆☆☆計画停止時間は、"+Line_KKT);
+      // console.log("☆☆☆☆計画停止時間は、"+Line_KKT);
       // console.log("☆☆☆☆計画停止時間は、"+this.$store.getters["timeBank/getcycleTimeMaijiArrayKKT"]);
       // console.log("☆☆☆☆"+this.nameAB);
       // console.log("☆☆☆☆"+this.nameAB);
@@ -863,6 +973,30 @@ export default {
         Line_newChartData.datasets[3].data[i] = Line_KKT[i]/60;
       }
       this.Line_chartData = Line_newChartData;
+
+      // マシンアワー残り時間インジケーターの表示グラフのデータ
+      let A_Data = this.$store.getters["timeBank/getmachineHourCutArry"](this.nameAB);
+      let Max_Value = this.$store.getters["timeBank/getmachineHourArryTgt"](this.nameAB);
+      let B_Data = Max_Value - A_Data;
+
+      const Progress_newData = Object.assign({}, this.Progress_Data);
+        Progress_newData.datasets[0].data[0] = A_Data;
+        Progress_newData.datasets[0].data[1] = B_Data;
+
+      const Progress_newOptions = Object.assign({}, this.Progress_options);
+
+      Progress_newOptions.scales.xAxes[0].ticks.max = Max_Value;
+      this.Progress_options.scales.xAxes[0].ticks.max = Max_Value; //にこれでレンダリング成功？21/4/16
+      if(this.$store.getters["timeBank/getStatus"](this.nameAB)== 1){
+        Progress_newData.datasets[0].backgroundColor[0]='limegreen';
+      }else{
+        Progress_newData.datasets[0].backgroundColor[0]='rgba(125,125,125,0.5)';
+      }
+
+      this.Progress_Data = Progress_newData;
+      this.Progress_options = Progress_newOptions;
+
+      console.log("マックスは、"+this.Progress_options.scales.xAxes[0].ticks.max);
 
       // console.log("グラフのセットタイムアウト！！！")
       setTimeout(() => {

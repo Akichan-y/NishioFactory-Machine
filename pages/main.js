@@ -143,6 +143,9 @@ export default {
     getKeikaJikan(){
       return this.$store.getters['timeBank/getKeikaJikan']
     },
+    getmachineHourCut(){
+      return this.$store.getters['timeBank/getmachineHourCutArry']
+    },
     Kadouritst(){
       return `【マシン稼働率${Math.round(this.$store.getters['getKadouJikan'] / this.$store.getters['timeBank/getKeikaJikanByou'] * 1000)/10}％】`
     }
@@ -310,8 +313,12 @@ export default {
         this.$store.commit("timeBank/machineHourArryUD",{machineCode:key,machineHour:0}), 
       );
       Object.keys(standArry).forEach(key => 
+        this.$store.commit("timeBank/machineHourCutArryUD",{machineCode:key,machineHour:0}), 
+      );
+      Object.keys(standArry).forEach(key => 
         this.$store.commit("timeBank/cycleCounterUD",{machineCode:key,first:true}), //trueの場合は、
       );
+
       //============================================================
 
         this.data_kadou=[];
@@ -423,6 +430,8 @@ export default {
 
                       //store.timeBankの直前のマシンアワーを格納する '21/3/234
                       this.$store.commit('timeBank/machineHourArryUD',{machineCode:TgtMachine,machineHour:TimeDeff});
+                      //store.timeBankの直前のマシンアワーを格納する '21/4/14
+                      this.$store.commit("timeBank/machineHourCutArryUD",{machineCode:TgtMachine,machineHour:TimeDeff});
 
                       //store.timeBankのセンシング時間・・・本プログラムの反応時刻数値
                       this.$store.commit('timeBank/sensingTimeArryUD',{machineCode:TgtMachine,sensingTime:TgtDEnd});
@@ -755,6 +764,41 @@ keikaJikan:function(){
         // if(nowStatus=="1"){
         //   this.$store.commit('timeBank/cycleTimeArrayUD',{machineCode:machine,timeDeff:0,UD:false});
         // };
+
+        // マシンアワー残りインジケーターの表示グラフ生成モジュール 21/4/14
+        // let LastMachineHourCut = this.$store.getters["timeBank/getmachineHourCutArry"];
+        // console.log(LastMachineHourCut);
+      if(this.$store.getters["timeBank/getStatus"](tgtMachine)==1){
+        let LastMachineHourCut = this.$store.getters["timeBank/getmachineHourArryTgt"](tgtMachine);
+        let before_d = this.$store.getters["timeBank/getSensingTime"](tgtMachine);
+        if(LastMachineHourCut>0){
+          let Now_d = new Date();
+          // Now_d.setHours()
+          // Now_d.setSeconds(secondsValue)
+          // Now_d.setSeconds(secondsValue)
+          let elepsedTime = Now_d.getTime() - before_d.getTime();
+          let mins = elepsedTime / (1000 *60);
+          elepsedTime = elepsedTime % (1000*60);
+          let secs = elepsedTime / 1000;
+          // console.log("分は" + Math.floor(mins));
+          // console.log("秒は" + Math.floor(secs));
+
+          let sec_total = Math.floor(mins) *60 + Math.floor(secs);
+          console.log("total="+sec_total);
+          // console.log("経過時間は、"+SecondsDeff);
+          // console.log(SecondsDeff_Total);
+          // let SecondsDeff_Total = SecondsDeff_HS + SecondsDeff_MS + SecondsDeff_S;
+
+          // console.log("差は、" + SecondsDeff_Total + "秒");
+          LastMachineHourCut = LastMachineHourCut-sec_total;
+          this.$store.commit("timeBank/machineHourCutArryUD",{machineCode:tgtMachine,machineHour:LastMachineHourCut});
+
+        }
+
+      }
+        // LastMachineHourCut = this.$store.getters["timeBank/getmachineHourCutArry"](tgtMachine);
+        // console.log("残り時間は、"+LastMachineHourCut);
+        // this.$store.commit("timeBank/machineHourArryCutUD",{machineCode:machine,machineHour:LastMachineHourCut});
       
       };
 
