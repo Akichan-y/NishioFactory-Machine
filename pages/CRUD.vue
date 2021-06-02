@@ -27,7 +27,7 @@
       <v-text-field
         v-model="search"
         append-icon="mdi-magnify"
-        label="Search"
+        label="検索"
         single-line
         hide-details
       ></v-text-field>
@@ -50,7 +50,7 @@
               v-bind="attrs"
               v-on="on"
             >
-              New Item
+              追加
             </v-btn>
           </template>
 
@@ -83,9 +83,9 @@
                     ></v-text-field>
                   </v-col>
                   <v-col
-                    cols="12"
-                    sm="6"
-                    md="4"
+                    cols="6"
+                    sm="4"
+                    md="2"
                   >
                     <v-text-field
                       v-model="editedItem.CTm"
@@ -201,10 +201,11 @@ const db = firebase.firestore();
           align: 'start',
           sortable: false,
           value: 'machine',
+          width:"7%"
         },
-        { text: '担当者', value: 'tantousha' },
-        { text: 'CycleTime（分）', value: 'CTm' },
-        { text: 'CycleTime（秒）', value: 'CTs' },
+        { text: '担当者', value: 'tantousha' ,width:"10%"},
+        { text: 'CycleTime（分）', value: 'CTm' ,width:"7%"},
+        { text: 'CycleTime（秒）', value: 'CTs',width:"7%" },
         { text: '備考', value: 'bikou' },
         { text: 'Actions', value: 'actions', sortable: false },
       ],

@@ -1,5 +1,6 @@
 <template>
   <dir>
+    
     <!-- <v-app></v-app>  これを使うと、component配置で上下の感覚がバカ広くなってしまうのでdirに変更-->
     <!-- <v-btn class="red" @click="redirect">Redirectテスト</v-btn> -->
     <!-- <p class="pink--text text--lighten-2 font-weight-bold overline">{{getProgressSeconds}}秒経過</p>
@@ -7,9 +8,9 @@
     <!-- <v-card width=420px height="280px" elevation="15" color="grey lighten-1"> -->
     <!-- <v-card class="mt-n12 mx-auto" width=300px height="420px" elevation="20" > -->
     <v-card
-      class="mt-1 mb-1 mx-auto"
+      class="mt-1 mb-1 py-0 mx-auto"
       width="300px"
-      height="500px"
+      height="400px"
       elevation="20"
     >
       <!-- <v-btn @click='Methods_calcMachineRate'>test</v-btn> -->
@@ -57,7 +58,7 @@
         <!-- <v-btn @click='RstTgt'>Reseet</v-btn> -->
 
         <v-row no-gutters class="mb-0 pa-0">
-          <v-col cols="4" fluid class="mt-5 pa-0">
+          <v-col cols="4" fluid class="mt-0 mb-0 pa-0">
             <span
               ><BarChart :data="chartData" :options="options" :height="400"
             /></span>
@@ -69,37 +70,37 @@
 
             <v-row class="mt-0 pa-0">
               <p
-                class="indigo--text ml-12 mt-2 mb-0 mr-1  text-right text--lighten-2 font-weight-bold headline"
+                class="indigo--text ml-15 mt-2 mb-0 mr-1 pa-0 text-right text--lighten-2 font-weight-bold headline"
               >
                 {{ getStopWatchArray }}
               </p>
             </v-row>
-            <v-row>
-              <v-col>
+            <v-row class="mt-0 pa-0">
+              <v-col class="my-0 pa-0">
                 <p
-                  class="green--text my-0 mr-1 text-right text--lighten-1 font-weight-bold headline"
+                  class="green--text my-2 mr-1 text-right text--lighten-1 font-weight-bold headline"
                 >
                   {{ getCountData }}回
                 </p>
+
               </v-col>
-              <v-col>
-                <p
-                  class="green--text my-0 mr-1 text-right  text--lighten-1 font-weight-bold headline"
+              <v-col class="my-0 pa-0">
+                  <p
+                  class="green--text my-2 mr-1 text-right  text--lighten-1 font-weight-bold headline"
                 >
                   {{ calcMachineRate }}%
                 </p>
               </v-col>
             </v-row>
-            <!-- </v-container> -->
             <v-row class="mt-0 pa-0">
-              <v-col>
+              <v-col class="my-0 pa-0">
                 <p
                   class="orange--text my-0 mr-1 text-right text--lighten-1 font-weight-bold headline"
                 >
                   {{ getCycleCounterDataDDR }}回
                 </p>
               </v-col>
-              <v-col>
+              <v-col class="my-0 pa-0">
                 <p
                   class="orange--text my-0 mr-1 text-right  text--lighten-1 font-weight-bold headline"
                 >
@@ -107,9 +108,8 @@
                 </p>
               </v-col>
             </v-row>
-            <!-- <p class="green--text mt-0 mr-5 text-right  text--lighten-2 font-weight-bold headline">{{getTimeData}}</p> -->
           </v-col>
-        </v-row>
+        </v-row >
         <LineChart
           class="mt-2"
           :data="Line_chartData"
@@ -117,9 +117,10 @@
           :width="400"
           :height="200"
         />
-        <!-- <p class="green--text mt-0 ml-2 text-left  text--lighten-2 font-weight-bold subtitle">{{getTimeDataMS}}</p> -->
         <p class="grey--text mt-1 mb-0 ml-3 text-center  text--darken-1 font-weight-bold subtitle2">
-          {{ chokuzenSW }}
+          {{current_MH}}
+
+          <!-- {{ chokuzenSW }} -->
         </p>
 
 
@@ -128,7 +129,7 @@
           :data="Progress_Data"
           :options="Progress_options"
           :width="400"
-          :height="200"
+          :height="100"
         />
 
         <!-- <table border="1" width="240" class="mt-2">
@@ -381,6 +382,7 @@ export default {
           {
             label: ["運転", "異常", "停止","計画停止"],
             backgroundColor: ["limegreen", "#FFBB00", "#D9073D" ,"#F9C1CF","#AAAAAA"],
+            borderColor: 'transparent', // ★すき間を無くす
             data: [10, 10, 10, 10]
           }
         ]
@@ -434,6 +436,7 @@ export default {
       },
       Line_options: {
         responsive: true,
+
         legend: {
           // position: 'right',
           display: false,
@@ -452,7 +455,9 @@ export default {
                 display: false, // 表示設定
                 labelString: "横軸ラベル", // ラベル
                 fontColor: "grey", // 文字の色
-                fontSize: 12 // フォントサイズ
+                fontSize: 12, // フォントサイズ
+                categoryPercentage: 0.5, // ┐省略時の値
+                barPercentage: 0.5,      // ┘
               },
               gridLines: {
                 // 補助線
@@ -522,9 +527,10 @@ export default {
             data: [0]
           },
           {
-            label: ["RUN"],
+            label: ["kara"],
             backgroundColor: [
-                'rgba(255, 99, 132, 0.8)',//マシンアワー残り
+              'rgba(125,125,125,0.2)' //マシンアワー残り
+                // 'rgba(255, 99, 132, 0.8)',//マシンアワー残り
             ],
             data: [0]
           },
@@ -533,8 +539,16 @@ export default {
       },
       Progress_options: {
         responsive: true,
+        layout: {                             //レイアウト
+          padding: {                          //余白設定
+              left: 0,
+              right: 0,
+              top: 0,
+              bottom: 0
+        }
+        },
         title: {
-          display: true, // タイトルを表示する
+          display: false, // タイトルを表示する
           text: 'マシンアワーProgressBar' // タイトルのテキスト
         },
         legend: {
@@ -552,10 +566,11 @@ export default {
               stacked: true, //積み重ねは、X,Yそれぞれにtrue
               scaleLabel: {
                 // 軸ラベル
-                display: true, // 表示設定
-                labelString: "マシンアワー残り（秒）", // ラベル
+                display: false, // 表示設定
+                labelString: "マシンアワー残り（分）", // ラベル
                 fontColor: "grey", // 文字の色
                 fontSize: 12 // フォントサイズ
+              
               },
               gridLines: {
                 // 補助線
@@ -565,7 +580,7 @@ export default {
               ticks: {
                 // 目盛り
                 min: 0, // 最小値
-                max: 600, // 最大値
+                max: 6, // 最大値
                 fontColor: "grey", // 目盛りの色
                 fontSize: 12 // フォントサイズ
               }
@@ -617,6 +632,24 @@ export default {
     // getSensingTimeStart(){
     //   return this.$store.getters['timeBank/getSensingTime'](this.nameAB)
     // },
+    current_MH:function(){
+      // return this.$store.getters["timeBank/getmachineHourArryTgt"](this.nameAB);
+      let ar = this.$store.getters["timeBank/getmachineHourArryTgt"](this.nameAB);
+      return ar;
+      // if (this.getCountData == 0) {
+      //   return "0分00秒";
+      // } else {
+      //   return this.$store.getters["timeBank/getStopWatchArray"](this.nameAB);
+      // }
+    },
+    current_Dacchaku:function(){
+      this.$store.getters["timeBank/getmachineHourArryTgt"](this.nameAB,1)
+    },
+    current_Dandori:function(){
+      this.$store.getters["timeBank/getmachineHourArryTgt"](this.nameAB,2)
+    },
+
+
     getCurrentTarget: function() {
       return this.$store.getters["timeBank/getCurrentTarget"](this.nameAB);
     },
@@ -651,6 +684,9 @@ export default {
     getStatusData() {
       return this.$store.getters["timeBank/getStatus"](this.nameAB);
     },
+
+
+
     //機械の稼働時間秒数
     //運転中は時間が加算されるようにして、稼働率を正確に把握する
     //マシンアワーの長いものでは特に有効となる
@@ -770,83 +806,89 @@ export default {
       // console.log(this.nameAB);
       // console.log("ステータスは、" + newStatus,oldStatus);
       // console.log(this.getStopWatchArray);
-      this.chokuzenSW = this.getStopWatchArray;
-      console.log("ストップウォッチは大丈夫なのでは？");
-      switch (oldStatus) {
-        case 0: {
-          switch (newStatus) {
-            case 0: {
-              break;
-            }
-            case 1: {
-              this.chokuzenSW = "停止" + this.getStopWatchArray + "後に起動！";
-              break;
-            }
-            case 2: {
-              this.chokuzenSW =
-                "停止" + this.getStopWatchArray + "後に異常発生！";
-              break;
-            }
-            case 3: {
-              this.chokuzenSW =
-                "停止" + this.getStopWatchArray + "後から段取中！";
-              break;
-            }
-            case 4: {
-              this.chokuzenSW =
-                "停止" + this.getStopWatchArray + "後に計画停止！";
-              break;
-            }
-          }
-          break;
-        }
-        case 1: {
-          this.chokuzenSW = "直前の運転は" + this.getStopWatchArray + "でした";
-          break;
-        }
-        case 2:
-          {
-            switch (newStatus) {
-              case 0: {
-                this.chokuzenSW =
-                  "異常停止" + this.getStopWatchArray + "から復旧！";
-                break;
-                break;
-              }
-              case 1: {
-                this.chokuzenSW = "運転中に異常発生！";
-                break;
-              }
-              case 2: {
-                break;
-              }
-              case 3: {
-                this.chokuzenSW = "段取りからの、異常発生！？";
-                break;
-              }
-              case 4: {
-                this.chokuzenSW = "計画停止からの、異常発生！？";
-                break;
-              }
-            }
-          }
-          break;
-        case 3: {
-          this.chokuzenSW = "段取り時間は" + this.getStopWatchArray + "でした";
-          break;
-          }
-        case 4: {
-          this.chokuzenSW = "計画停止は" + this.getStopWatchArray + "でした";
-          break;
-        }
+      // this.chokuzenSW = this.getStopWatchArray;
+      // console.log("ストップウォッチは大丈夫なのでは？");
+      // switch (oldStatus) {
+      //   case 0: {
+      //     switch (newStatus) {
+      //       case 0: {
+      //         break;
+      //       }
+      //       case 1: {
+      //         this.chokuzenSW = "停止" + this.getStopWatchArray + "後に起動！";
+      //         break;
+      //       }
+      //       case 2: {
+      //         this.chokuzenSW =
+      //           "停止" + this.getStopWatchArray + "後に異常発生！";
+      //         break;
+      //       }
+      //       case 3: {
+      //         this.chokuzenSW =
+      //           "停止" + this.getStopWatchArray + "後から段取中！";
+      //         break;
+      //       }
+      //       case 4: {
+      //         this.chokuzenSW =
+      //           "停止" + this.getStopWatchArray + "後に計画停止！";
+      //         break;
+      //       }
+      //     }
+      //     break;
+      //   }
+      //   case 1: {
+      //     this.chokuzenSW = "マシンアワー：" + this.getStopWatchArray + "";
+      //     break;
+      //   }
+      //   case 2:
+      //     {
+      //       switch (newStatus) {
+      //         case 0: {
+      //           this.chokuzenSW =
+      //             "異常停止" + this.getStopWatchArray + "から復旧！";
+      //           break;
+      //           break;
+      //         }
+      //         case 1: {
+      //           this.chokuzenSW = "運転中に異常発生！";
+      //           break;
+      //         }
+      //         case 2: {
+      //           break;
+      //         }
+      //         case 3: {
+      //           this.chokuzenSW = "段取りからの、異常発生！？";
+      //           break;
+      //         }
+      //         case 4: {
+      //           this.chokuzenSW = "計画停止からの、異常発生！？";
+      //           break;
+      //         }
+      //       }
+      //     }
+      //     break;
+      //   case 3: {
+      //     this.chokuzenSW = "段取り時間は" + this.getStopWatchArray + "でした";
+      //     break;
+      //     }
+      //   case 4: {
+      //     this.chokuzenSW = "計画停止は" + this.getStopWatchArray + "でした";
+      //     break;
+      //   }
       
-      }
+      // }
     }
   },
   mounted: function() {
     this.graphUD();
   },
   methods: {
+    JikanHenkan:function(NowSeconds){
+      m = Math.floor(NowSeconds / 60);
+      s = "00" + String(NowSeconds % 60);
+      
+      return `${m}分${s.slice(-2)}秒`
+    },
     sleep: function(waitSec, callbackFunc) {
       //setTimeoutのサンプル。ちゃんと動くことは確認済
       var spanedSec = 0;
@@ -913,7 +955,7 @@ export default {
     //   console.log(this.$store.getters["timeBank/getCycleCounterData"](this.nameAB));
     // },
     graphUD: function() {
-      //部品名変更時のStyleリセット。ここに置くのはいささかダサいが、他で有効な場所を見つけることが出来ないのでｈしかななし。
+      //部品名変更時のStyleリセット。ここに置くのはいささかダサいが、他で有効な場所を見つけることが出来ないのでしかななし。
       this.isTgt = false;
 
       //円グラフのデータを生成する
@@ -964,7 +1006,9 @@ export default {
       // console.log("☆☆☆☆"+this.nameAB);
       // console.log("★★★★★★★★★★★"+Line_unten);
       // let len = Line_unten.length;
-      // console.log("Lengthは、" + Line_unten.length);
+      console.log("対象機械は、" + this.nameAB);
+      console.log("Lengthは、" + Line_unten.length);
+      console.log("LineUntenは、" + Line_unten);
       for (let i = 0; i < Line_unten.length; i++) {
         // console.log("For "+i+" 回目"+Line_newChartData.datasets[0].data[i]);
         Line_newChartData.datasets[0].data[i] = Line_unten[i]/60;
@@ -976,27 +1020,43 @@ export default {
 
       // マシンアワー残り時間インジケーターの表示グラフのデータ
       let A_Data = this.$store.getters["timeBank/getmachineHourCutArry"](this.nameAB);
-      let Max_Value = this.$store.getters["timeBank/getmachineHourArryTgt"](this.nameAB);
+      let Max_Value = this.$store.getters["timeBank/getmachineHourArryTgt"](this.nameAB,0);
       let B_Data = Max_Value - A_Data;
 
       const Progress_newData = Object.assign({}, this.Progress_Data);
-        Progress_newData.datasets[0].data[0] = A_Data;
-        Progress_newData.datasets[0].data[1] = B_Data;
+
+        Progress_newData.datasets[0].data[0] = A_Data/60;
+        Progress_newData.datasets[1].data[0] = B_Data/60;
 
       const Progress_newOptions = Object.assign({}, this.Progress_options);
 
-      Progress_newOptions.scales.xAxes[0].ticks.max = Max_Value;
-      this.Progress_options.scales.xAxes[0].ticks.max = Max_Value; //にこれでレンダリング成功？21/4/16
+      // console.log("朝マック！");
+      Progress_newOptions.scales.xAxes[0].ticks.max = Max_Value/60;
+      this.Progress_options.scales.xAxes[0].ticks.max = Max_Value/60; //にこれでレンダリング成功 なぜかマックス自動で変わってしまっていた21/4/16
       if(this.$store.getters["timeBank/getStatus"](this.nameAB)== 1){
+        switch (true){
+          case A_Data<5:
+                Progress_newData.datasets[1].backgroundColor[0]='deeppink';
+                break;
+          case A_Data<15:
+                Progress_newData.datasets[1].backgroundColor[0]='orange';
+                break;
+          case A_Data<30:
+                Progress_newData.datasets[1].backgroundColor[0]='rgba(255, 215, 0,0.9)';
+                break;
+          default: 
+            Progress_newData.datasets[1].backgroundColor[0]='rgba(125,125,125,0.2)';
+        };
         Progress_newData.datasets[0].backgroundColor[0]='limegreen';
       }else{
+
         Progress_newData.datasets[0].backgroundColor[0]='rgba(125,125,125,0.5)';
       }
 
       this.Progress_Data = Progress_newData;
       this.Progress_options = Progress_newOptions;
 
-      console.log("マックスは、"+this.Progress_options.scales.xAxes[0].ticks.max);
+      // console.log("マックスは、"+this.Progress_options.scales.xAxes[0].ticks.max);
 
       // console.log("グラフのセットタイムアウト！！！")
       setTimeout(() => {

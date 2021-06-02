@@ -146,7 +146,7 @@ Line_options: {
 
       ],
       chartData2:[],
-      colors2:['#808080','#FFBB00', '#D9073D', 'limegreen']
+      colors2:['#808080','#FFBB00', '#D9073D',"#F9C1CF",'limegreen']
       }
     },
   methods:{
@@ -195,7 +195,8 @@ Line_options: {
       let y2 = d2.getFullYear();
       let m2 = d2.getMonth();
       let d3 = d2.getDate();
-      let startD = new Date(y2,m2,d3,7,45,0);  // 夜中とか早朝とかのデータを除外 朝は暖機運転等を省く為に、７時４５分からカウント開始
+      let startD = new Date(y2,m2,d3,7,0,0);  // 夜中とか早朝とかのデータを除外 朝は暖機運転等を省く為に、７時４５分からカウント開始
+      // ❐❐❐ここで４５分までとしていたことで、ガントチャートの色指定があやふやになってしまっていたのでで、７時００分に変更
       let endD = new Date(y2,m2,d3,23,59,59);
       let startTimestamp = String(Date.parse(startD)); //orderByChildで範囲指定
       let endTimestamp = String(Date.parse(endD));     //orderByChildで範囲指定
@@ -258,7 +259,7 @@ Line_options: {
 
                 
                 if(TgtDStartD != TgtDEndD || person.startTime=="999"){
-                  console.log("あ〜、ここに入っちゃっているんだね〜"+ person.startTime)
+                  // console.log("あ〜、ここに入っちゃっているんだね〜"+ person.startTime)
                   //日付が違う場合または、スタート時刻が999の場合ー＞マイコン起動初回
                   //  this.ObiArryPush(TgtDEndH,person.status,TgtDEnd-TgtDEndZero,TgtDStart,TgtDEnd);
                   
@@ -269,7 +270,7 @@ Line_options: {
                   let forEnd;
                   
                   if(TgtH>=8){
-                    console.log([TgtDStartD,TgtDEndD,person.startTime]);
+                    // console.log([TgtDStartD,TgtDEndD,person.startTime]);
                     forStart=TgtDEnd;
                     forStart.setHours(8,0,0);
                     this.chartData.push([this.machineCode,"STP",forStart,TgtDEnd]);
@@ -283,7 +284,7 @@ Line_options: {
                   //2秒前から1秒前をDDR
                   //2秒前から1秒前をERR
                   let nowForStatus;
-                  for(let i=4;i>0;i--){
+                  for(let i=4;i>=0;i--){
                     switch(i){
                       case 4: nowForStatus="RUN";
                               break;
@@ -293,10 +294,14 @@ Line_options: {
                               break;
                       case 1: nowForStatus="ERR";
                               break;
+                      case 0: nowForStatus="KKT";
+                              break;
                     };
-                    forStart=new Date(TgtDEnd.setSeconds(TgtS-i)); //TgtDEndの時間からi秒を引く（初回は4秒）
-                    forEnd=new Date(TgtDEnd.setSeconds(TgtS-i+1));//TgtDEndの時間からi秒を引いて１秒を足す（初回は3秒）
-                    console.log([this.machineCode,nowForStatus,forStart,forEnd]);
+                    forStart=new Date(TgtDEnd);
+                    forStart.setSeconds(forStart.getSeconds()-i); //TgtDEndの時間からi秒を引く（初回は4秒）
+                    forEnd=new Date(TgtDEnd);
+                    forEnd.setSeconds(forEnd.getSeconds()-i+1);//TgtDEndの時間からi秒を引いて１秒を足す（初回は3秒）
+                    // console.log([this.machineCode,nowForStatus,forStart,forEnd]);
                     this.chartData.push([this.machineCode,nowForStatus,forStart,forEnd]);
                   }
                  // この処理によって、ガントチャートが正しく色分けされるようになった！

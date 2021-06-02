@@ -86,6 +86,11 @@ export default {
           title: '編集',
           to: '/CRUD'
         },
+        // {
+        //   icon: 'mdi-youtube',
+        //   title: 'YouTube',
+        //   to: '/youtube'
+        // },
       ],
       miniVariant: false,
       right: true,

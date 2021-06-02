@@ -21,6 +21,7 @@ Vue.use(Vuex);
 //LN034(HPライン)に加え、雅チームの、MC-026 MC-027 MC-024 MC-028 の４台を新たなターゲットとする。
 
 export default {
+  middleware:'sample.js',
   mixins:[Mixin],
   components:{
     StopWatch, 
@@ -32,6 +33,12 @@ export default {
   },
   data(){
     return{
+      Hiduke:false,
+      Fukushima:true,
+      Nishio:true,
+      mydate: new Date().toISOString().substr(0, 10),
+      mydateProgress:false,
+
       excludeSetTime : [],
       timerId:0,
       KadouJikan:'稼働時間',
@@ -92,9 +99,13 @@ export default {
     }
   },
   mounted(){
+    this.mydate = new Date().toISOString().substr(0, 10);
     this.fillData();
   },
   computed: {
+    getStatusData() {
+      return this.$store.getters["timeBank/getStatus"](this.nameAB);
+    },
     // getKeikaJikanByou:function(){
     getProgressSeconds:function(){
       // return this.$store.getters['timeBank/getKeikaJikan'];
@@ -150,6 +161,18 @@ export default {
       return `【マシン稼働率${Math.round(this.$store.getters['getKadouJikan'] / this.$store.getters['timeBank/getKeikaJikanByou'] * 1000)/10}％】`
     }
   },
+  watch:{
+    mydate:function(new_mydate,old_mydate){
+      // console.log(new_mydate);
+      // alert(new_mydate);
+      this.mydateProgress = true;
+      this.fillData()
+      this.mydateProgress = false;
+    },
+    
+
+
+  },
   methods:{
     cycleTimeArrayUD(){
       this.$store.commit('timeBank/cycleTimeArrayUD',{machineCode:"LN034",timeDeff:345})
@@ -171,7 +194,7 @@ export default {
     test2(){
       let finalH2 =6
       for (let i = 1; i < finalH2; i++) {
-        console.log(i);
+        // console.log(i);
         // その他の文
      }
         // for(let i=1;i<finalH;i++){     //第に領域(二時間以上乖離している場合の中間)の時間
@@ -251,8 +274,8 @@ export default {
       });
     },
     fire:function(){
-      console.clear;
-      // console.log('fire!');
+      // console.clear;
+      console.log('fire!');
       // console.log('fire!2');
       //====================================================================
       //昨日（2020/11/26）のIoT研究会にて小田中くんからリソース節約のアドバイス!!
@@ -261,7 +284,12 @@ export default {
 
       //new Date()が冗長で、変数名が乱暴な記述ではあるが、、、下記の通り、
       //スタート時間でソートを掛けた上で、本日の0時0分0秒から、23時59分59秒を対象とする。
-      let d2 = new Date();
+      // let d2 = new Date();
+      // let d2 = new Date(2021,4,19);
+      let d2 = new Date(this.mydate);
+      console.log("現在の日時は❐❐❐❐❐❐❐❐❐❐❐❐❐❐❐❐❐❐❐❐❐❐❐❐❐❐");
+      console.clear(d2);
+      // let d2 = new Date(this.mydate);
       // let d2 = new Date(2021,2,24);
       let y2 = d2.getFullYear();
       let m2 = d2.getMonth();
@@ -270,9 +298,9 @@ export default {
       let endD = new Date(y2,m2,d3,23,59,59);
       let startTimestamp = String(Date.parse(startD));
       let endTimestamp = String(Date.parse(endD));
-      console.log("日付セットスタート" + endTimestamp);
-      console.log("日付セットスタート" + startD);
-      console.log("日付セットスタート" + endD);
+      // console.log("日付セットスタート" + endTimestamp);
+      // console.log("日付セットスタート" + startD);
+      // console.log("日付セットスタート" + endD);
 
       const database = firebase.database();
       const fireStoreDB = firebase.firestore();
@@ -296,7 +324,8 @@ export default {
       //Vuexのデータをリセットする=================================
       //考え方は、毎回リセットをかけて１から全計算する。
       // console.log("initialize!");
-      for (let machine of Object.keys(this.$store.getters['timeBank/getStopWatchArrayPrimitive'])) {
+      for (let machine of Object.keys(this.$store.getters['timeBank/getStatusFull'])) {
+      // for (let machine of Object.keys(this.$store.getters['timeBank/getStopWatchArrayPrimitive'])) {
         this.$store.commit('timeBank/cycleTimeArrayUD',machine);
         this.$store.commit('timeBank/cycleCounterRst',machine);
         this.$store.commit('timeBank/cycleCounterErrRst',machine);
@@ -305,18 +334,40 @@ export default {
         this.$store.commit('timeBank/cycleTimeArrayErrRst',machine);
         this.$store.commit('timeBank/cycleTimeArrayDDRRst',machine);
         this.$store.commit('timeBank/cycleTimeArrayKKTRst',machine);
+        //↓毎時の連想配列＋配列変数４つと、センシングストップウォッチなど４つの連想配列変数をInitialセット
         this.$store.commit('timeBank/cycleTimeArrayMaijiRst',machine);
       }
       //============================================================
       let standArry = this.$store.getters["timeBank/getStatusFull"];
-      Object.keys(standArry).forEach(key => 
-        this.$store.commit("timeBank/machineHourArryUD",{machineCode:key,machineHour:0}), 
-      );
+
+      // Object.keys(standArry).forEach(key => 
+      //   this.$store.commit("timeBank/machineHourArryUD",{machineCode:key,machineHour:0}), 
+      // );
+
+
       Object.keys(standArry).forEach(key => 
         this.$store.commit("timeBank/machineHourCutArryUD",{machineCode:key,machineHour:0}), 
       );
       Object.keys(standArry).forEach(key => 
         this.$store.commit("timeBank/cycleCounterUD",{machineCode:key,first:true}), //trueの場合は、
+      );
+      Object.keys(standArry).forEach(key => 
+        this.$store.commit("timeBank/cycleCounterErrUD",{machineCode:key,first:true}), //trueの場合は、
+      );
+      Object.keys(standArry).forEach(key => 
+        this.$store.commit("timeBank/cycleCounterDDRUD",{machineCode:key,first:true}), //trueの場合は、
+      );
+      Object.keys(standArry).forEach(key => 
+        this.$store.commit("timeBank/cycleTimeArrayRst",{machineCode:key}), //trueの場合は、
+      );
+      Object.keys(standArry).forEach(key => 
+        this.$store.commit("timeBank/cycleTimeArrayErrRst",{machineCode:key}), //trueの場合は、
+      );
+      Object.keys(standArry).forEach(key => 
+        this.$store.commit("timeBank/cycleTimeArrayDDRRst",{machineCode:key}), //trueの場合は、
+      );
+      Object.keys(standArry).forEach(key => 
+        this.$store.commit("timeBank/cycleTimeArrayKKTRst",{machineCode:key}), //trueの場合は、
       );
 
       //============================================================
@@ -335,16 +386,18 @@ export default {
             
             let person = data[i];
             // console.log(person);
-            let nowDate=new Date();     //現在時刻
-            let nowYYYY=String(nowDate.getFullYear());
-            let nowMM=String(nowDate.getMonth()+1);
-            let nowDD=String(nowDate.getDate());
-            let nowYYYYMMDD= nowYYYY+nowMM+nowDD;
-            let nowH=String(nowDate.getHours());
-            let nowM=String(nowDate.getMinutes());
-            let nowS=String(nowDate.getSeconds());            
-            let now_HMS = 
-                          `${this.zeroPadding(nowH,2)}時${this.zeroPadding(nowM,2)}分${this.zeroPadding(nowS,2)}秒 `;
+            // let nowDate=new Date();     //現在時刻
+            // let nowDate=new Date();     //現在時刻
+            // let nowDate=new Date(this.mydate);     //現在時刻
+            // let nowYYYY=String(nowDate.getFullYear());
+            // let nowMM=String(nowDate.getMonth()+1);
+            // let nowDD=String(nowDate.getDate());
+            // let nowYYYYMMDD= nowYYYY+nowMM+nowDD;
+            // let nowH=String(nowDate.getHours());
+            // let nowM=String(nowDate.getMinutes());
+            // let nowS=String(nowDate.getSeconds());            
+            // let now_HMS = 
+            //               `${this.zeroPadding(nowH,2)}時${this.zeroPadding(nowM,2)}分${this.zeroPadding(nowS,2)}秒 `;
             // console.log(now_HMS);
             // let TgtDEnd=new Date(Number(person.timestamp));
             let TgtDEnd=new Date(Number(person.endTime)); // センシング終了時刻
@@ -367,7 +420,7 @@ export default {
                                       ${this.zeroPadding(TgtS,2)} `;
             let Org_HMS = 
                           `${this.zeroPadding(TgtH,2)}時${this.zeroPadding(TgtM,2)}分${this.zeroPadding(TgtS,2)}秒 `;
-            if(nowYYYYMMDD == TgtYYYYMMDD_Org){   
+            // if(nowYYYYMMDD == TgtYYYYMMDD_Org){   
               let TgtDStart=new Date(Number(person.startTime));
               let TgtYYYYstart=String(TgtDStart.getFullYear());
               let TgtMMstart=String(TgtDStart.getMonth()+1);
@@ -410,6 +463,9 @@ export default {
                       
                       //store.timeBankのカウンター連想配列をアップ
                       this.$store.commit('timeBank/cycleCounterUD',{machineCode:TgtMachine,first:false});
+
+                      //連想配列の配列に変更 0=マシンアワー、1=脱着時間、2=段取り時間
+                      this.$store.commit('timeBank/machineHourArryUD',{current_state:1,machineCode:TgtMachine,machineHour:this.JikanHenkan(TimeDeff)});
                     };
 
                     break;
@@ -429,7 +485,9 @@ export default {
                       
 
                       //store.timeBankの直前のマシンアワーを格納する '21/3/234
-                      this.$store.commit('timeBank/machineHourArryUD',{machineCode:TgtMachine,machineHour:TimeDeff});
+                      //連想配列の配列に変更 0=マシンアワー、1=脱着時間、2=段取り時間
+                      this.$store.commit('timeBank/machineHourArryUD',{current_state:0,machineCode:TgtMachine,machineHour:this.JikanHenkan(TimeDeff)});
+
                       //store.timeBankの直前のマシンアワーを格納する '21/4/14
                       this.$store.commit("timeBank/machineHourCutArryUD",{machineCode:TgtMachine,machineHour:TimeDeff});
 
@@ -479,6 +537,9 @@ export default {
                         //機械ごとの毎時時間を算出ｓモジュール
                         //7番目の0が運転中の時間時間（1が段取り、2が）
                         this.MaijiArrayVuexSet(TgtHStart,TgtH,TgtDStart,TgtDEnd,TgtMachine,TimeDeff,1,'timeBank/cycleTimeArrayMaijiUD');
+
+                      //連想配列の配列に変更 0=マシンアワー、1=脱着時間、2=段取り時間
+                      this.$store.commit('timeBank/machineHourArryUD',{current_state:2,machineCode:TgtMachine,machineHour:this.JikanHenkan(TimeDeff)});
                       };
                       break;
                   case 'KKT1': //段取りの開始(2は異常停止赤ランプ)
@@ -524,10 +585,11 @@ export default {
                                       
                         //store.timeBankのサイクルタイム運転時間を合計していく
                         this.$store.commit('timeBank/cycleTimeArrayErrUD',{machineCode:TgtMachine,timeDeff:TimeDeff});
-
+                        
+                        this.MaijiArrayVuexSet(TgtHStart,TgtH,TgtDStart,TgtDEnd,TgtMachine,TimeDeff,2,'timeBank/cycleTimeArrayMaijiUD');
                         //機械ごとの毎時時間を算出するモジュール
                         //7番目の0が運転中の時間時間（1が段取り、2が）
-                        this.MaijiArrayVuexSet(TgtHStart,TgtH,TgtDStart,TgtDEnd,TgtMachine,TimeDeff,2,'timeBank/cycleTimeArrayMaijiUD');
+                        // this.MaijiArrayVuexSet(TgtHStart,TgtH,TgtDStart,TgtDEnd,TgtMachine,TimeDeff,2,'timeBank/cycleTimeArrayMaijiUD');
                       };  
                       break;
 
@@ -570,9 +632,9 @@ export default {
            
 
               };
-            }else{
-              this.lastD = '【本日はデータがありません】';
-            }
+            // }else{
+            //   this.lastD = '【本日はデータがありません】';
+            // }
           } //forループの終わり
 
           this.timeBegan = new Date();
@@ -583,6 +645,9 @@ export default {
         },//fire の終わり
         
 MaijiArrayVuexSet:function(TgtHStart,TgtH,TgtDStart,TgtDEnd,TgtMachine,TimeDeff,nowTgtState,TgtCommit){
+    //時間ごとの帯グラフ的なものをイメージしてつくったモジュールであるが、
+    //グラフでの色分けがうまく出来ずに断念した。
+
     //機械ごと時間あたり運転時間のサイクルタイムを分解・生成する 最長１０時間まで対応===========================
     let elapsed_XX=[0,0,0,0,0,0,0,0,0,0,0]
     //機械ごと時間あたり段取り時間のサイクルタイムを分解・生成する 最長１０時間まで対応===========================
@@ -757,6 +822,11 @@ keikaJikan:function(){
         const hms = `${h2}:${m2}:${s2}`;
         const ms2 =`${m2x}分${s2}秒`; //時分秒よりも、分秒の方がわかりやすいので変更 '21/3/3
         const secondsValue = h1*3600 + m2 * 60 + s1;
+
+
+
+
+
         this.$store.commit("timeBank/StopWatchArryUD",{machineCode:machine,StopWatchTime:ms2,StopWatchSecondsTime:secondsValue});
 
         // console.log("現在のステータは、"+this.$store.getters['timeBank/getStatus'](machine));
@@ -769,7 +839,9 @@ keikaJikan:function(){
         // let LastMachineHourCut = this.$store.getters["timeBank/getmachineHourCutArry"];
         // console.log(LastMachineHourCut);
       if(this.$store.getters["timeBank/getStatus"](tgtMachine)==1){
-        let LastMachineHourCut = this.$store.getters["timeBank/getmachineHourArryTgt"](tgtMachine);
+        let LastMachineHourCut = this.$store.getters["timeBank/getmachineHourArryTgt"](tgtMachine,0);
+        //↑gettersでこういう書き方が成立するんだね '21/6/1
+        //❏❏❏❏❏❏❏❏❏❏❏❏❏❏❏❏❏❏❏❏❏❏❏❏❏❏❏❏❏❏
         let before_d = this.$store.getters["timeBank/getSensingTime"](tgtMachine);
         if(LastMachineHourCut>0){
           let Now_d = new Date();
@@ -784,7 +856,7 @@ keikaJikan:function(){
           // console.log("秒は" + Math.floor(secs));
 
           let sec_total = Math.floor(mins) *60 + Math.floor(secs);
-          console.log("total="+sec_total);
+          // console.log("total="+sec_total);
           // console.log("経過時間は、"+SecondsDeff);
           // console.log(SecondsDeff_Total);
           // let SecondsDeff_Total = SecondsDeff_HS + SecondsDeff_MS + SecondsDeff_S;
@@ -803,7 +875,12 @@ keikaJikan:function(){
       };
 
     },
-
+    JikanHenkan:function(NowSeconds){
+      let m = Math.floor(NowSeconds / 60);
+      let s = "00" + String(NowSeconds % 60);
+      
+      return `${m}'${s.slice(-2)}`
+    },
     zeroPrefix:function(){
       var zero = '';
       for(var i = 0; i < digit; i++) {

@@ -105,6 +105,8 @@ export default {
                 'rgba(153, 102, 255, 0.9)',
                 'rgba(255, 206, 86, 0.9)',
                 'rgba(200, 100, 86, 0.9)',
+                'rgba(255, 99, 132, 0.9)',
+                'rgba(54, 162, 235, 0.9)'
                 
             ],
             data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
@@ -366,11 +368,11 @@ export default {
       this.Line_chartData.labels=[];
       this.Line_chartData.datasets[0].data=[];
       let standArryMachine = this.$store.getters["timeBank/getStatusFull"];
-      console.log(standArryMachine);
+      // console.log(standArryMachine);
       Object.keys(standArryMachine).forEach(key => 
         this.Line_chartData.labels.push(key)
       );
-      console.log(this.Line_chartData.labels);
+      // console.log(this.Line_chartData.labels);
       // console.log(this.Line_chartData.labels);
       const newChartData2 = Object.assign({}, this.Line_chartData);
       let standArry = this.$store.getters["timeBank/getmachineHourArry"];
@@ -392,9 +394,9 @@ export default {
         return Math.max(arr);
 
       },standArry);
-      console.log("resultは、");
+      // console.log("resultは、");
           // console.log(arr);
-      console.log(result);
+      // console.log(result);
       // console.log(max);
       // console.log("standArray!");
       // console.log(standArry);

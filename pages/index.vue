@@ -22,6 +22,41 @@
       <!-- <v-btn @click.native='fire'>Fire!</v-btn> 
       <v-btn @click='fire'>Fire2!</v-btn>  -->
      </v-col>
+     <v-col v-show="mydateProgress">
+        <v-progress-circular
+          indeterminate
+          color="primary"
+        ></v-progress-circular>
+     </v-col>
+          <v-col>
+        <v-checkbox
+          v-model="Hiduke"
+          label="日付指定"
+        ></v-checkbox>
+     </v-col>
+     <v-col>
+        <v-checkbox
+          v-model="Nishio"
+          label="西尾工場"
+        ></v-checkbox>
+     </v-col>
+     <!-- <v-col>
+        <div  width="50px" height="50px" v-if="Nishio == true">
+          <img src="~/assets/factory/Nishio.png" width="100%" height="100%">
+        </div>
+     </v-col> -->
+     <v-col>
+        <v-checkbox
+          v-model="Fukushima"
+          label="福島工場"
+        ></v-checkbox>
+     </v-col>
+    <!-- <v-col>
+        <div  width="50px" height="50px" v-if="Fukushima == true">
+          <img src="~/assets/factory/Fukushima.png" width="100%" height="100%">
+        </div>
+     </v-col> -->
+
     <v-col>
         <div id="GenzaiJikan" class="my-0 indigo--text text-right text--lighten-2 font-weight-bold subtitle">{{GenzaiJikan}}</div>
     </v-col>
@@ -29,32 +64,59 @@
    <!-- </v-spacer> -->
   </v-row>
   <v-row class="my-0" style="height: 600px;">
-    <v-col cols="12" sm="8" md="6" lg="3" xl="2">
+
+    <v-col cols="12" sm="8" md="6" lg="3" xl="2" v-show="Hiduke == true">
+      <div mt-16>
+
+        <v-date-picker  
+        v-model="mydate" 
+        elevation="8"       
+        color="blue accent-4"
+        header-color="blue lighten-1"
+        locale=”ja-jp”></v-date-picker>
+      </div>
+      <!-- <v-card width="300px" height="420px" elevation='12'>
+        sdfasdfasfa
+      </v-card> -->
+    </v-col>
+    <v-col cols="12" sm="8" md="6" lg="3" xl="2" v-show="Nishio == true">
       <compMachine name="MC024"/>
       <!-- <v-card width="300px" height="420px" elevation='12'>
         sdfasdfasfa
       </v-card> -->
     </v-col>
-    <v-col cols="12" sm="6" md="4" lg="3" xl="2">
+    <v-col cols="12" sm="6" md="4" lg="3" xl="2" v-if="Nishio == true">
     <!-- <v-col cols="12" sm="8" md="6" lg="4" xl="3" style="background-color: #E1BEE7"> -->
       <compMachine name="MC026"/>
     </v-col>
-    <v-col cols="12" sm="6" md="4" lg="3" xl="2">
+    <v-col cols="12" sm="6" md="4" lg="3" xl="2" v-if="Nishio == true">
       <compMachine name="MC027"/>
     </v-col>
-    <v-col cols="12" sm="6" md="4" lg="3" xl="2">
+    <v-col cols="12" sm="6" md="4" lg="3" xl="2" v-if="Nishio == true">
       <compMachine name="MC028"/>
     </v-col>
-    <v-col cols="12" sm="6" md="4" lg="3" xl="2">
+    <v-col cols="12" sm="6" md="4" lg="3" xl="2" v-if="Nishio == true">
       <compMachine name="LN034"/>
     </v-col>
-    <v-col cols="12" sm="6" md="4" lg="3" xl="2">
+    <v-col cols="12" sm="6" md="4" lg="3" xl="2" v-if="Nishio == true">
       <compMachine name="MC031"/>
     </v-col>
-    <v-col cols="12" sm="6" md="4" lg="3" xl="2">
+    <v-col cols="12" sm="6" md="4" lg="3" xl="2" v-if="Fukushima == true">
+      <compMachine name="MC009"/>
+    </v-col>
+    <v-col cols="12" sm="6" md="4" lg="3" xl="2" v-if="Fukushima == true">
+      <compMachine name="MC010"/>
+    </v-col>
+    <v-col cols="12" sm="6" md="4" lg="3" xl="2" v-if="Fukushima == true">
+      <compMachine name="MC011"/>
+    </v-col>
+    <v-col cols="12" sm="6" md="4" lg="3" xl="2" v-if="Fukushima == true">
+      <compMachine name="MC013"/>
+    </v-col>
+    <v-col cols="12" sm="6" md="4" lg="3" xl="2" v-if="Fukushima == true">
       <compMachine name="GT999"/>
     </v-col>
-    <v-col cols="12" sm="6" md="4" lg="3" xl="2">
+    <v-col cols="12" sm="6" md="4" lg="3" xl="2" v-if="Fukushima == true">
       <compMachine2 name="MC027"/>
       <!-- <compDateMH /> -->
     </v-col>
